@@ -8,7 +8,7 @@ object Test extends App {
   import dsl._
 
   val fWord = FeatureGroup("word")(Array(1, 2, 3, 1, 2, 4, 6, 7))
-  val f2 = "abs" %% "word" $ 2.0
+  val f2 = "abs" ~ "word" $ 2.0
   val f3 = "tab" $ 4.0
 
   val alphabet = new Alphabet
@@ -19,6 +19,8 @@ object Test extends App {
 
   val s1 = fv.toString
   val s2 = fv.alphabetize.toString()
+
+  val fv2 = FeatureVector.read(alphabet)(s1)
 
   println(s1)
   println(s2)

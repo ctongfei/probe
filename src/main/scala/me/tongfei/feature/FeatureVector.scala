@@ -72,12 +72,12 @@ class FeatureVector(val alphabet: Alphabet) {
    */
   def <<=(fs: FeatureList) = {
     for (f ← fs) {
-      data(alphabet(f.group + "#" + f.value)) += f.weight
+      data(alphabet(f.group + "~" + f.value)) += f.weight
     }
   }
 
   def <<=(f: Feature) = {
-    data(alphabet(f.group + "#" + f.value)) += f.weight
+    data(alphabet(f.group + "~" + f.value)) += f.weight
   }
 
   /**
@@ -97,5 +97,26 @@ object FeatureVector {
     val r = new FeatureVector(alphabet)
     r <<= list
     r
+  }
+
+  def read(alphabet: Alphabet)(s: String) = {
+    import dsl._
+    val fv = FeatureVector.empty(alphabet)
+    for (f ← s.split("\\s+")) {
+      val tokens = f.split(":")
+      val w = tokens(1).toDouble
+      val gv = tokens(0).split("~")
+      if (gv.length == 2) {
+        val g = gv(0)
+        val v = gv(1)
+        fv <<= (g ~ v $ w)
+      }
+      else if (gv.length == 1) {
+        val g = gv(0)
+        fv <<= (g ~ "" $ w)
+      }
+      else throw new NumberFormatException
+    }
+    fv
   }
 }
