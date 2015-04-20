@@ -72,9 +72,22 @@ class FeatureVector(val alphabet: Alphabet) {
    */
   def <<=(fs: FeatureList) = {
     for (f ← fs) {
-      data(alphabet(f.group + ": " + f.value)) += f.weight
+      data(alphabet(f.group + "#" + f.value)) += f.weight
     }
   }
+
+  def <<=(f: Feature) = {
+    data(alphabet(f.group + "#" + f.value)) += f.weight
+  }
+
+  /**
+   * Converts this feature vector to its text representation.
+   */
+  override def toString = {
+    data.toArray.map{case (k, v) => (alphabet.get(k), v)}.sortBy(_._1).map{case (k, v) => s"$k:$v"}.mkString(" ")
+  }
+
+  def alphabetize = data
 
 }
 

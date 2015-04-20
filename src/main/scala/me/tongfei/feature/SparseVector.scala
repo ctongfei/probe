@@ -7,4 +7,8 @@ import scala.collection._
  */
 class SparseVector extends mutable.HashMap[Int, Double] {
   @inline override def apply(i: Int) = getOrElse(i, 0.0)
+
+  override def toString() = {
+    this.toArray.sortBy(_._1).map{case (k, v) => s"$k:$v"}.mkString(" ")
+  }
 }
