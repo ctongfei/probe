@@ -12,7 +12,7 @@ trait Feature { self =>
 
   def $(w: Double) = Feature(self.group, self.value, w)
 
-  override def toString = s"$group~$value $$ $weight"
+  override def toString = s"$group~$value: $weight"
 
 }
 

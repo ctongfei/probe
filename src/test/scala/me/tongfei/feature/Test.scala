@@ -21,6 +21,7 @@ object Test extends App {
   val s2 = fv.alphabetize.toString()
 
   val fv2 = FeatureVector.read(alphabet)(s1)
+  val fv3 = FeatureVector.readAlphabetized(alphabet)(s2)
 
   println(s1)
   println(s2)
