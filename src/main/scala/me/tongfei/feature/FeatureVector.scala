@@ -21,11 +21,7 @@ class FeatureVector(val alphabet: Alphabet) {
 
   def pairs = data.iterator
 
-  /**
-   * Returns the sum of two feature vectors.
-   * @param that
-   * @return
-   */
+  /** Returns the sum of two feature vectors. */
   def +(that: FeatureVector): FeatureVector = {
     if (this.alphabet ne that.alphabet) throw new Exception()
     val res = new FeatureVector(alphabet)
@@ -34,11 +30,7 @@ class FeatureVector(val alphabet: Alphabet) {
     res
   }
 
-  /**
-   * Returns the difference of two feature vectors.
-   * @param that
-   * @return
-   */
+  /** Returns the difference of two feature vectors. */
   def -(that: FeatureVector): FeatureVector = {
     if (this.alphabet ne that.alphabet) throw new Exception()
     val res = new FeatureVector(alphabet)
@@ -47,11 +39,7 @@ class FeatureVector(val alphabet: Alphabet) {
     res
   }
 
-  /**
-   * Scales this feature vector by a constant.
-   * @param k
-   * @return
-   */
+  /** Scales this feature vector by a constant. */
   def *(k: Double): FeatureVector = {
     val res = new FeatureVector(alphabet)
     for (i ← this.data.keys)
@@ -59,11 +47,7 @@ class FeatureVector(val alphabet: Alphabet) {
     res
   }
 
-  /**
-   * Returns the dot product of two feature vectors.
-   * @param that
-   * @return this . that
-   */
+  /** Returns the dot product of two feature vectors. */
   def dot(that: FeatureVector): Double = {
     if (this.alphabet ne that.alphabet) throw new Exception()
     var res = 0.0
@@ -96,14 +80,10 @@ class FeatureVector(val alphabet: Alphabet) {
 
 object FeatureVector {
 
-  /**
-   * Creates an empty feature vector.
-   */
+  /** Creates an empty feature vector. */
   def empty(alphabet: Alphabet) = new FeatureVector(alphabet)
 
-  /**
-   * Converts an iterable list of features into a feature vector.
-   */
+  /** Converts an iterable list of features into a feature vector. */
   def apply(alphabet: Alphabet)(list: FeatureList) = {
     val r = new FeatureVector(alphabet)
     r <<= list
@@ -116,7 +96,6 @@ object FeatureVector {
    * @param s Feature vector string
    */
   def read(alphabet: Alphabet)(s: String) = {
-    import dsl._
     val fv = FeatureVector.empty(alphabet)
     for (f ← s.split("\\s+")) {
       val tokens = f.split(":")
@@ -125,11 +104,11 @@ object FeatureVector {
       if (gv.length == 2) {
         val g = gv(0)
         val v = gv(1)
-        fv <<= (g ~ v $ w)
+        fv <<= Feature(g, v, w)
       }
       else if (gv.length == 1) {
         val g = gv(0)
-        fv <<= (g $ w)
+        fv <<= Feature(g, w)
       }
       else throw new NumberFormatException
     }

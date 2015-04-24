@@ -5,11 +5,9 @@ package me.tongfei.feature
  */
 object Test extends App {
 
-  import dsl._
-
   val fWord = FeatureGroup("word")(Array(1, 2, 3, 1, 2, 4, 6, 7))
-  val f2 = "abs" ~ "word" $ 2.0
-  val f3 = "tab" $ 4.0
+  val f2 = Feature("abs", "word", 2.0)
+  val f3 = Feature("tab", 4.0)
 
   val alphabet = new Alphabet
   val fv = new FeatureVector(alphabet)

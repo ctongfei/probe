@@ -8,8 +8,6 @@ package me.tongfei.feature
  */
 trait FeatureList extends Iterable[Feature] { self =>
 
-  import dsl._
-
   def +(that: FeatureList): FeatureList = new FeatureList {
     def iterator = self.iterator ++ that.iterator
   }
@@ -18,21 +16,21 @@ trait FeatureList extends Iterable[Feature] { self =>
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator
-    } yield (f1.key + "," + f2.key) ~ (f1.value + "," + f2.value) $ (f1.weight * f2.weight)
+    } yield Feature(f1.key + "," + f2.key, f1.value + "," + f2.value, f1.weight * f2.weight)
   }
 
   def =*=(that: FeatureList): FeatureList = new FeatureList {
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator if f1.value == f2.value
-    } yield (f1.key + "=" + f2.key) ~ f1.value $ (f1.weight * f2.weight)
+    } yield Feature(f1.key + "=" + f2.key, f1.value, f1.weight * f2.weight)
   }
 
   def =?=(that: FeatureList): FeatureList = new FeatureList {
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator if f1.value == f2.value
-    } yield (f1.key + "=" + f2.key) ~ "" $ (f1.weight * f2.weight)
+    } yield Feature(f1.key + "=" + f2.key, f1.weight * f2.weight)
   }
 
   override def toString() = iterator.mkString("\n")
