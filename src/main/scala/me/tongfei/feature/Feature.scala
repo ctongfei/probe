@@ -6,27 +6,30 @@ package me.tongfei.feature
  */
 trait Feature { self =>
 
-  def group: String
+  def key: String
   def value: String
-  def weight: Double = 1.0
+  def weight: Double
 
-  def $(w: Double) = Feature(self.group, self.value, w)
+  def $(w: Double) = Feature(self.key, self.value, w)
 
-  override def toString = s"$group~$value: $weight"
+  override def toString = s"$key~$value: $weight"
 
 }
 
+case class BinaryFeature(key: String, value: String) extends Feature {
+  def weight = 1.0
+}
+
+case class RealValuedFeature(key: String, value: String, weight: Double) extends Feature
+
 object Feature {
 
-  def apply(g: String, v: Any) = new Feature {
-    def group = g
-    def value = v.toString
-  }
+  def apply(g: String) = BinaryFeature(g, "")
 
-  def apply(g: String, v: Any, w: Double) = new Feature {
-    def group = g
-    def value = v.toString
-    override def weight = w
-  }
+  def apply(g: String, v: String) = BinaryFeature(g, v)
+
+  def apply(g: String, w: Double) = RealValuedFeature(g, "", w)
+
+  def apply(g: String, v: String, w: Double) = RealValuedFeature(g, v, w)
 
 }

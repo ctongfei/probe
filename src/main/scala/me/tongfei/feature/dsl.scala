@@ -5,8 +5,8 @@ package me.tongfei.feature
  */
 object dsl {
 
-  implicit class string2feature(val g: String) {
-    def ~(v: Any): Feature = Feature(g, v)
+  implicit class string2feature(val g: String) extends AnyVal {
+    def ~(v: Any): Feature = Feature(g, v.toString)
     def $(w: Double) = Feature(g, "", w)
   }
 

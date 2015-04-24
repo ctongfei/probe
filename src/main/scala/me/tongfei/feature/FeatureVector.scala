@@ -75,13 +75,13 @@ class FeatureVector(val alphabet: Alphabet) {
   /** Adds the specific list of features to this feature vector. */
   def <<=(fs: FeatureList) = {
     for (f ← fs) {
-      data(alphabet(f.group + "~" + f.value)) += f.weight
+      data(alphabet(f.key + "~" + f.value)) += f.weight
     }
   }
 
   /** Adds the specific feature to this feature vector. */
   def <<=(f: Feature) = {
-    data(alphabet(f.group + "~" + f.value)) += f.weight
+    data(alphabet(f.key + "~" + f.value)) += f.weight
   }
 
   /** Converts this feature vector to its text representation. */

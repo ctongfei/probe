@@ -8,7 +8,7 @@ object FeatureGroup {
   import dsl._
 
   def apply(featureGroup: String)(featureValues: Iterable[Any]): FeatureList = new FeatureList {
-    def iterator = featureValues.iterator.map(v => featureGroup ~ v $ 1.0)
+    def iterator = featureValues.iterator.map(v => featureGroup ~ v)
   }
 
   def withWeight(featureGroup: String)(featureValues: Iterable[(Any, Double)]): FeatureList = new FeatureList {

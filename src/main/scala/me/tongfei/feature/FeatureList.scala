@@ -18,21 +18,21 @@ trait FeatureList extends Iterable[Feature] { self =>
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator
-    } yield (f1.group + "," + f2.group) ~ (f1.value + "," + f2.value) $ (f1.weight * f2.weight)
+    } yield (f1.key + "," + f2.key) ~ (f1.value + "," + f2.value) $ (f1.weight * f2.weight)
   }
 
   def =*=(that: FeatureList): FeatureList = new FeatureList {
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator if f1.value == f2.value
-    } yield (f1.group + "=" + f2.group) ~ f1.value $ (f1.weight * f2.weight)
+    } yield (f1.key + "=" + f2.key) ~ f1.value $ (f1.weight * f2.weight)
   }
 
   def =?=(that: FeatureList): FeatureList = new FeatureList {
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator if f1.value == f2.value
-    } yield (f1.group + "=" + f2.group) ~ "" $ (f1.weight * f2.weight)
+    } yield (f1.key + "=" + f2.key) ~ "" $ (f1.weight * f2.weight)
   }
 
   override def toString() = iterator.mkString("\n")
