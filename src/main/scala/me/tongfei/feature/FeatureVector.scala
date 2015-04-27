@@ -19,6 +19,13 @@ class FeatureVector(val alphabet: Alphabet) {
     data(alphabet(feature)) = x
   }
 
+  /** Creates a copy of this feature vector with the same alphabet. */
+  def copy: FeatureVector = {
+    val n = new FeatureVector(this.alphabet)
+    n.data ++= this.data
+    n
+  }
+
   def pairs = data.iterator
 
   /** Returns the sum of two feature vectors. */
@@ -55,6 +62,15 @@ class FeatureVector(val alphabet: Alphabet) {
       res += this.data(i) * that.data(i)
     res
   }
+
+  def l2norm: Double = {
+    var res = 0.0
+    for (i ← this.data)
+      res += i._2 * i._2
+    math.sqrt(res)
+  }
+
+  def l2normalize: FeatureVector = this * (1.0 / this.l2norm)
 
   /** Adds the specific list of features to this feature vector. */
   def <<=(fs: FeatureList) = {
