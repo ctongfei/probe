@@ -8,11 +8,12 @@ trait Feature { self =>
 
   def key: String
   def value: String
+  def name: String = s"$key~$value"
   def weight: Double
 
   def $(w: Double) = Feature(self.key, self.value, w)
 
-  override def toString = s"$key~$value: $weight"
+  override def toString = s"$name: $weight"
 
 }
 
