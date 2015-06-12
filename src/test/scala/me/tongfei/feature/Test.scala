@@ -6,6 +6,12 @@ package me.tongfei.feature
 object Test extends App {
 
   val fWord = FeatureGroup("word")(Array(1, 2, 3, 1, 2, 4, 6, 7))
+  val fX = FeatureGroup.withWeight("idf")((0 until 4).map(i => i → (1.0 / i)))
+
+  val g1 = fWord * fX
+  val g2 = fWord =*= fX
+  val g3 = fWord =?= fX
+
   val f2 = Feature("abs", "word", 2.0)
   val f3 = Feature("tab", 4.0)
 
