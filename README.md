@@ -8,5 +8,5 @@ SBT:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies += "me.tongfei" %% "feature" % "0.1.2-SNAPSHOT"
+libraryDependencies += "me.tongfei" %% "feature" % "0.1.3-SNAPSHOT"
 ```
