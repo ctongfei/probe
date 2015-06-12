@@ -11,7 +11,14 @@ trait Feature { self =>
   def name: String = s"$key~$value"
   def weight: Double
 
+  override def equals(that: Any) = that match {
+    case that: Feature => this.name == that.name
+    case _ => false
+  }
+
   override def toString = s"$name: $weight"
+
+  override def hashCode = toString.hashCode
 
 }
 
@@ -30,18 +37,23 @@ case class ProductFeature(f1: Feature, f2: Feature) extends Feature {
 case class JoinedFeature(f1: Feature, f2: Feature) extends Feature {
   require(f1.value == f2.value)
   def key = f1.key + "=" + f2.key
+  def value = f1.value
+  def weight = f1.weight * f2.weight
+}
+
+case class EqualityFeature(f1: Feature, f2: Feature) extends Feature {
+  require(f1.value == f2.value)
+  def key = f1.key + "=" + f2.key
   def value = ""
   def weight = f1.weight * f2.weight
 }
 
+
 object Feature {
 
   def apply(g: String) = BinaryFeature(g, "")
-
   def apply(g: String, v: String) = BinaryFeature(g, v)
-
   def apply(g: String, w: Double) = RealValuedFeature(g, "", w)
-
   def apply(g: String, v: String, w: Double) = RealValuedFeature(g, v, w)
 
 }
