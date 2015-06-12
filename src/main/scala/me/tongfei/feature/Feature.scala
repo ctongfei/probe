@@ -11,8 +11,6 @@ trait Feature { self =>
   def name: String = s"$key~$value"
   def weight: Double
 
-  def $(w: Double) = Feature(self.key, self.value, w)
-
   override def toString = s"$name: $weight"
 
 }
@@ -22,6 +20,19 @@ case class BinaryFeature(key: String, value: String) extends Feature {
 }
 
 case class RealValuedFeature(key: String, value: String, weight: Double) extends Feature
+
+case class ProductFeature(f1: Feature, f2: Feature) extends Feature {
+  def key = f1.key + "," + f2.key
+  def value = f1.value + "," + f2.value
+  def weight = f1.weight * f2.weight
+}
+
+case class JoinedFeature(f1: Feature, f2: Feature) extends Feature {
+  require(f1.value == f2.value)
+  def key = f1.key + "=" + f2.key
+  def value = ""
+  def weight = f1.weight * f2.weight
+}
 
 object Feature {
 

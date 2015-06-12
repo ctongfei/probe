@@ -2,9 +2,9 @@ name := "feature"
 
 organization := "me.tongfei"
 
-version := "0.1.0-SNAPSHOT"
+version := "0.1.2-SNAPSHOT"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.6"
 
 isSnapshot := true
 

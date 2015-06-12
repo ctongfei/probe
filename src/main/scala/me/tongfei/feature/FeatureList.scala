@@ -16,7 +16,7 @@ trait FeatureList extends Iterable[Feature] { self =>
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator
-    } yield Feature(f1.key + "," + f2.key, f1.value + "," + f2.value, f1.weight * f2.weight)
+    } yield ProductFeature(f1, f2)
   }
 
   def =*=(that: FeatureList): FeatureList = new FeatureList {
@@ -30,7 +30,7 @@ trait FeatureList extends Iterable[Feature] { self =>
     def iterator = for {
       f1 ← self.iterator
       f2 ← that.iterator if f1.value == f2.value
-    } yield Feature(f1.key + "=" + f2.key, f1.weight * f2.weight)
+    } yield JoinedFeature(f1, f2)
   }
 
   override def toString() = iterator.mkString("\n")
