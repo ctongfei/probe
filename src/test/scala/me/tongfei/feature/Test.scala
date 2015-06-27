@@ -12,8 +12,8 @@ object Test extends App {
   val g2 = fWord =*= fX
   val g3 = fWord =?= fX
 
-  val f2 = Feature("abs", "word", 2.0)
-  val f3 = Feature("tab", 4.0)
+  val f2 = Feature("abs", "word") → 2.0
+  val f3 = Feature("tab") → 4.0
 
   val alphabet = new Alphabet
   val fv = new FeatureVector(alphabet)

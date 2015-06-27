@@ -81,23 +81,28 @@ class FeatureVector(val alphabet: Alphabet) {
   /** Adds the specific list of features to this feature vector. */
   def <<=(fs: FeatureList) = {
     for (f ← fs) {
-      data(alphabet(f.name)) += f.weight
+      data(alphabet(f._1.name)) += f._2
     }
   }
 
   /** Adds the specific feature to this feature vector. */
-  def <<=(f: Feature) = {
-    data(alphabet(f.name)) += f.weight
+  def <<=(f: (Feature, Double)) = {
+    data(alphabet(f._1.name)) += f._2
   }
 
-  def toFeatureList: FeatureList = FeatureList(pairs.map { case (k, v) => Feature(alphabet.get(k), v) })
+  /** Adds a binary feature to this feature vector. */
+  def <<=(f: Feature) = {
+    data(alphabet(f.name)) += 1.0
+  }
+
+  def toFeatureList: FeatureList = FeatureList.ofIterable(pairs.view.map { case (k, v) => Feature(alphabet.get(k)) → v })
 
   /** Converts this feature vector to its text representation. */
   override def toString = {
     data.toArray.map{case (k, v) => (alphabet.get(k), v)}.sortBy(_._1).map{case (k, v) => s"$k:$v"}.mkString(" ")
   }
 
-  /** Returns the alphabetized (internal sparse vector). */
+  /** Returns the alphabetized (internal) sparse vector. */
   def alphabetize = data
 
 }
@@ -128,11 +133,11 @@ object FeatureVector {
       if (gv.length == 2) {
         val g = gv(0)
         val v = gv(1)
-        fv <<= Feature(g, v, w)
+        fv <<= Feature(g, v) → w
       }
       else if (gv.length == 1) {
         val g = gv(0)
-        fv <<= Feature(g, w)
+        fv <<= Feature(g) → w
       }
       else throw new NumberFormatException
     }
