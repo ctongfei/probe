@@ -2,8 +2,9 @@ package me.tongfei.feature
 
 /**
  * @author Tongfei Chen (ctongfei@gmail.com).
+ * @since 0.1.0
  */
-class FeatureVector(val alphabet: Alphabet) {
+class AlphabetizedFeatureVector(val alphabet: Alphabet) {
 
   private val data = new SparseVector
 
@@ -20,8 +21,8 @@ class FeatureVector(val alphabet: Alphabet) {
   }
 
   /** Creates a copy of this feature vector with the same alphabet. */
-  def copy: FeatureVector = {
-    val n = new FeatureVector(this.alphabet)
+  def copy: AlphabetizedFeatureVector = {
+    val n = new AlphabetizedFeatureVector(this.alphabet)
     n.data ++= this.data
     n
   }
@@ -29,33 +30,33 @@ class FeatureVector(val alphabet: Alphabet) {
   def pairs = data.asInstanceOf[Iterable[(Int, Double)]]
 
   /** Returns the sum of two feature vectors. */
-  def +(that: FeatureVector): FeatureVector = {
+  def +(that: AlphabetizedFeatureVector): AlphabetizedFeatureVector = {
     if (this.alphabet ne that.alphabet) throw new Exception()
-    val res = new FeatureVector(alphabet)
+    val res = new AlphabetizedFeatureVector(alphabet)
     for (i ← this.data.keySet union that.data.keySet)
       res.data(i) = this.data(i) + that.data(i)
     res
   }
 
   /** Returns the difference of two feature vectors. */
-  def -(that: FeatureVector): FeatureVector = {
+  def -(that: AlphabetizedFeatureVector): AlphabetizedFeatureVector = {
     if (this.alphabet ne that.alphabet) throw new Exception()
-    val res = new FeatureVector(alphabet)
+    val res = new AlphabetizedFeatureVector(alphabet)
     for (i ← this.data.keySet union that.data.keySet)
       res.data(i) = this.data(i) - that.data(i)
     res
   }
 
   /** Scales this feature vector by a constant. */
-  def *(k: Double): FeatureVector = {
-    val res = new FeatureVector(alphabet)
+  def *(k: Double): AlphabetizedFeatureVector = {
+    val res = new AlphabetizedFeatureVector(alphabet)
     for (i ← this.data.keys)
       res.data(i) = this.data(i) * k
     res
   }
 
   /** Returns the dot product of two feature vectors. */
-  def dot(that: FeatureVector): Double = {
+  def dot(that: AlphabetizedFeatureVector): Double = {
     if (this.alphabet ne that.alphabet) throw new Exception()
     var res = 0.0
     for (i ← this.data.keys)
@@ -63,7 +64,7 @@ class FeatureVector(val alphabet: Alphabet) {
     res
   }
 
-  def cosSimilarity(that: FeatureVector): Double = (this dot that) / this.l2Norm / that.l2Norm
+  def cosSimilarity(that: AlphabetizedFeatureVector): Double = (this dot that) / this.l2Norm / that.l2Norm
 
   def l2Norm: Double = {
     var res = 0.0
@@ -72,11 +73,11 @@ class FeatureVector(val alphabet: Alphabet) {
     math.sqrt(res)
   }
 
-  def l2Normalize: FeatureVector = this * (1.0 / this.l2Norm)
+  def l2Normalize: AlphabetizedFeatureVector = this * (1.0 / this.l2Norm)
 
   def maxNorm: Double = this.data.values.max
 
-  def maxNormalize: FeatureVector = this * (1.0 / this.maxNorm)
+  def maxNormalize: AlphabetizedFeatureVector = this * (1.0 / this.maxNorm)
 
   /** Adds the specific list of features to this feature vector. */
   def <<=(fs: FeatureList) = {
@@ -103,18 +104,18 @@ class FeatureVector(val alphabet: Alphabet) {
   }
 
   /** Returns the alphabetized (internal) sparse vector. */
-  def alphabetize = data
+  def internal = data
 
 }
 
-object FeatureVector {
+object AlphabetizedFeatureVector {
 
   /** Creates an empty feature vector. */
-  def empty(alphabet: Alphabet) = new FeatureVector(alphabet)
+  def empty(alphabet: Alphabet) = new AlphabetizedFeatureVector(alphabet)
 
   /** Converts an iterable list of features into a feature vector. */
   def apply(alphabet: Alphabet)(list: FeatureList) = {
-    val r = new FeatureVector(alphabet)
+    val r = new AlphabetizedFeatureVector(alphabet)
     r <<= list
     r
   }
@@ -125,7 +126,7 @@ object FeatureVector {
    * @param s Feature vector string
    */
   def read(alphabet: Alphabet)(s: String) = {
-    val fv = FeatureVector.empty(alphabet)
+    val fv = AlphabetizedFeatureVector.empty(alphabet)
     for (f ← s.split("\\s+")) {
       val tokens = f.split(":")
       val w = tokens(1).toDouble
@@ -150,7 +151,7 @@ object FeatureVector {
    * @param s Alphabetized feature vector string
    */
   def readAlphabetized(alphabet: Alphabet)(s: String) = {
-    val fv = FeatureVector.empty(alphabet)
+    val fv = AlphabetizedFeatureVector.empty(alphabet)
     for (f ← s.split("\\s+")) {
       val tokens = f.split(":")
       val w = tokens(1).toDouble

@@ -3,6 +3,7 @@ package me.tongfei.feature
 /**
  * A featurizer is a function that takes in an object (of any type X) and returns an iterable sequence of features.
  * @author Tongfei Chen (ctongfei@gmail.com).
+ * @since 0.1.0
  */
 trait Featurizer[X] extends (X => FeatureList) { self =>
 

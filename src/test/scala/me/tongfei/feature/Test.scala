@@ -12,21 +12,27 @@ object Test extends App {
   val g2 = fWord =*= fX
   val g3 = fWord =?= fX
 
+  val sf1 = g1.toFeatureVector
+  val sf2 = g2.toFeatureVector
+  val sf3 = g3.toFeatureVector
+
   val f2 = Feature("abs", "word") → 2.0
   val f3 = Feature("tab") → 4.0
 
   val alphabet = new Alphabet
-  val fv = new FeatureVector(alphabet)
+  val fv = new AlphabetizedFeatureVector(alphabet)
   fv <<= fWord
   fv <<= f2
   fv <<= f3
 
+
+
   val s1 = fv.toString
-  val s2 = fv.alphabetize.toString()
+  val s2 = fv.internal.toString()
   val fvc = fv.copy
 
-  val fv2 = FeatureVector.read(alphabet)(s1)
-  val fv3 = FeatureVector.readAlphabetized(alphabet)(s2)
+  val fv2 = AlphabetizedFeatureVector.read(alphabet)(s1)
+  val fv3 = AlphabetizedFeatureVector.readAlphabetized(alphabet)(s2)
 
   println(s1)
   println(s2)

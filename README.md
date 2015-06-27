@@ -1,6 +1,7 @@
 ## feature
 A feature engineering framework
 
+New in 0.2.0: 
 New in 0.1.3: Principled pattern matching of composite features
 
 SBT:
@@ -8,5 +9,5 @@ SBT:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies += "me.tongfei" %% "feature" % "0.1.3-SNAPSHOT"
+libraryDependencies += "me.tongfei" %% "feature" % "0.2.0-SNAPSHOT"
 ```

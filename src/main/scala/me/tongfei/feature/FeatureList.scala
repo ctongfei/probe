@@ -36,7 +36,9 @@ trait FeatureList extends Iterable[(Feature, Double)] { self =>
       f2 ← that.iterator if f1._1.value == f2._1.value
     } yield EqualityFeature(f1._1, f2._1) → (f1._2 * f2._2)
   }
-  
+
+  def toFeatureVector = StringFeatureVector(this)
+
   override def toString() = iterator.mkString("\n")
 
 }
