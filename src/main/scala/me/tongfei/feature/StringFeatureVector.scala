@@ -58,6 +58,8 @@ class StringFeatureVector extends DefaultMap[String, Double] {
     math.sqrt(res)
   }
 
+  def l2Normalize = this * (1.0 / this.l2Norm)
+
   def l1norm: Double = {
     var res = 0.0
     for ((f, w) ← this)
@@ -74,6 +76,10 @@ class StringFeatureVector extends DefaultMap[String, Double] {
       if (this.data contains f.name)
         this.data(f.name) += w
     else this.data += f.name → w
+  }
+
+  def <<=(f: (Feature, Double)) = {
+    this <<= Iterable(f)
   }
 
 }

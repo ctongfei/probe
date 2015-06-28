@@ -1,7 +1,7 @@
 ## feature
 A feature engineering framework
 
-New in 0.2.0: 
+
 New in 0.1.3: Principled pattern matching of composite features
 
 SBT:
