@@ -1,5 +1,7 @@
 package me.tongfei.feature
 
+import poly.algebra.hkt._
+
 /**
  * A feature list is a list of features that can be iterated. Each item iterated is of type
  * [[me.tongfei.feature.Feature]], which contains the feature group, the feature value and the feature weight.
@@ -54,4 +56,5 @@ object FeatureList {
   }
 
   def apply(fs: (Feature, Double)*): FeatureList = ofIterable(fs)
+
 }
