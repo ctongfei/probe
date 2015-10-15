@@ -1,56 +1,32 @@
 package me.tongfei.feature
 
 /**
- * Represents a basic feature. Does not includes the weight.
  * @author Tongfei Chen (ctongfei@gmail.com).
- * @since 0.2.0
  */
-trait Feature { self =>
+trait Feature[+A] {
 
-  def key: String
-  def value: String
-  def name: String = key + "~" + value
+  def group: String
+  def value: A
 
-  override def equals(that: Any) = that match {
-    case that: Feature => this.name == that.name
-    case _ => false
-  }
-
-  override def toString = "[" + name + "]"
-
-  override def hashCode = name.hashCode
-
+  def name = toString
+  override def toString = s"$group~$value"
 }
-
-case class BasicFeature(key: String, value: String) extends Feature {
-  override final val name = key + "~" + value
-}
-
-
-case class ProductFeature(f1: Feature, f2: Feature) extends Feature {
-  val key = f1.key + "," + f2.key
-  val value = f1.value + "," + f2.value
-  override final val name = key + "~" + value
-}
-
-case class JoinedFeature(f1: Feature, f2: Feature) extends Feature {
-  require(f1.value == f2.value)
-  val key = f1.key + "=" + f2.key
-  val value = f1.value
-  override final val name = key + "~" + value
-}
-
-case class EqualityFeature(f1: Feature, f2: Feature) extends Feature {
-  require(f1.value == f2.value)
-  val key = f1.key + "=" + f2.key
-  val value = ""
-  override final val name = key + "~" + value
-}
-
 
 object Feature {
+  def apply[A](g: String, v: A): Feature[A] = new Feature[A] {
+    def group = g
+    def value = v
+  }
 
-  def apply(g: String) = BasicFeature(g, "")
-  def apply(g: String, v: String) = BasicFeature(g, v)
+  def unapply[A](f: Feature[A]): Option[(String, A)] = Some((f.group, f.value))
+}
 
+case class ProductFeature[+A, +B](ga: String, va: A, gb: String, vb: B) extends Feature[(A, B)] {
+  def group: String = ga + "," + gb
+  def value: (A, B) = (va, vb)
+}
+
+case class EqualityFeature(ga: String, gb: String) extends Feature[Unit] {
+  def group: String = ga + "=" + gb
+  def value: Unit = ()
 }

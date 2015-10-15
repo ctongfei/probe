@@ -1,17 +1,17 @@
 package me.tongfei.feature
 
 /**
+ * Helper routines to build a feature list.
  * @author Tongfei Chen (ctongfei@gmail.com).
- * @since 0.1.0
  */
 object FeatureGroup {
 
-  def apply(featureGroup: String)(featureValues: Iterable[Any]): FeatureList = new FeatureList {
-    def iterator = featureValues.iterator.map(v => Feature(featureGroup, v.toString) → 1.0)
+  def apply[A](group: String)(fvs: Iterable[A]) = FeatureList {
+    fvs.map(v => Feature(group, v) → 1.0)
   }
 
-  def withWeight(featureGroup: String)(featureValues: Iterable[(Any, Double)]): FeatureList = new FeatureList {
-    def iterator = featureValues.iterator.map(p => Feature(featureGroup, p._1.toString) → p._2)
+  def withWeight[A](group: String)(fvs: Iterable[(A, Double)]) = FeatureList {
+    fvs.map { case (v, w) => Feature(group, v) → w }
   }
 
 }

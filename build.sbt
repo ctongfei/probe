@@ -4,15 +4,13 @@ organization := "me.tongfei"
 
 version := "0.3.0-SNAPSHOT"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 isSnapshot := true
 
-resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
-
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies += "me.tongfei" %% "poly-algebra" % "0.2.10-SNAPSHOT" changing()
+// libraryDependencies += "me.tongfei" %% "poly-algebra" % "0.2.10-SNAPSHOT" changing()
 
 scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline")
 

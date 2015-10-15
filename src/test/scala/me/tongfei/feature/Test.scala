@@ -9,15 +9,13 @@ object Test extends App {
   val fX = FeatureGroup.withWeight("idf")((0 until 4).map(i => i → (1.0 / i)))
 
   val g1 = fWord * fX
-  val g2 = fWord =*= fX
   val g3 = fWord =?= fX
 
-  val sf1 = g1.toFeatureVector
-  val sf2 = g2.toFeatureVector
-  val sf3 = g3.toFeatureVector
+  val sf1 = StringFeatureVector(g1)
+  val sf3 = StringFeatureVector(g3)
 
   val f2 = Feature("abs", "word") → 2.0
-  val f3 = Feature("tab") → 4.0
+  val f3 = Feature("tab", ()) → 4.0
 
   val alphabet = new Alphabet
   val fv = new AlphabetizedFeatureVector(alphabet)

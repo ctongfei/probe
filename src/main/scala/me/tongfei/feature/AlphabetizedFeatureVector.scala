@@ -80,23 +80,23 @@ class AlphabetizedFeatureVector(val alphabet: Alphabet) {
   def maxNormalize: AlphabetizedFeatureVector = this * (1.0 / this.maxNorm)
 
   /** Adds the specific list of features to this feature vector. */
-  def <<=(fs: FeatureList) = {
-    for (f ← fs) {
-      data(alphabet(f._1.name)) += f._2
+  def <<=[A](fs: FeatureList[A]) = {
+    for ((f, w) ← fs.features) {
+      data(alphabet(f.toString)) += w
     }
   }
 
   /** Adds the specific feature to this feature vector. */
-  def <<=(f: (Feature, Double)) = {
-    data(alphabet(f._1.name)) += f._2
+  def <<=[A](f: (Feature[A], Double)) = {
+    data(alphabet(f._1.toString)) += f._2
   }
 
   /** Adds a binary feature to this feature vector. */
-  def <<=(f: Feature) = {
-    data(alphabet(f.name)) += 1.0
+  def <<=[A](f: Feature[A]) = {
+    data(alphabet(f.toString)) += 1.0
   }
 
-  def toFeatureList: FeatureList = FeatureList.ofIterable(pairs.view.map { case (k, v) => Feature(alphabet.get(k)) → v })
+//  def toFeatureList: FeatureList = FeatureList { pairs.view.map { case (k, v) => Feature(alphabet.get(k)) → v } }
 
   /** Converts this feature vector to its text representation. */
   override def toString = {
@@ -114,7 +114,7 @@ object AlphabetizedFeatureVector {
   def empty(alphabet: Alphabet) = new AlphabetizedFeatureVector(alphabet)
 
   /** Converts an iterable list of features into a feature vector. */
-  def apply(alphabet: Alphabet)(list: FeatureList) = {
+  def apply[A](alphabet: Alphabet)(list: FeatureList[A]) = {
     val r = new AlphabetizedFeatureVector(alphabet)
     r <<= list
     r
@@ -138,7 +138,7 @@ object AlphabetizedFeatureVector {
       }
       else if (gv.length == 1) {
         val g = gv(0)
-        fv <<= Feature(g) → w
+        fv <<= Feature(g, ()) → w
       }
       else throw new NumberFormatException
     }

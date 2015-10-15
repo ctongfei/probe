@@ -11,11 +11,11 @@ class StringFeatureVector extends DefaultMap[String, Double] {
 
   private val data = mutable.HashMap[String, Double]()
 
-  def apply(f: Feature): Double = data.getOrElse(f.name, 0.0)
+  def apply[A](f: Feature[A]): Double = data.getOrElse(f.name, 0.0)
 
   override def apply(f: String): Double = data.getOrElse(f, 0.0)
 
-  def update(f: Feature, x: Double) = data(f.name) = apply(f) + x
+  def update[A](f: Feature[A], x: Double) = data(f.name) = apply(f) + x
 
   def update(f: String, x: Double) = data(f) = apply(f) + x
 
@@ -71,21 +71,21 @@ class StringFeatureVector extends DefaultMap[String, Double] {
 
   def cosSimilarity(that: StringFeatureVector) = (this dot that) / this.l2Norm / that.l2Norm
 
-  def <<=(fs: Iterable[(Feature, Double)]): Unit = {
-    for ((f, w) ← fs)
+  def <<=[A](fs: FeatureList[A]): Unit = {
+    for ((f, w) ← fs.features)
       if (this.data contains f.name)
         this.data(f.name) += w
     else this.data += f.name → w
   }
 
-  def <<=(f: (Feature, Double)): Unit = {
-    this <<= Iterable(f)
+  def <<=[A](f: (Feature[A], Double)): Unit = {
+    this <<= FeatureList(Iterable(f))
   }
 
 }
 
 object StringFeatureVector {
-  def apply(fs: Iterable[(Feature, Double)]) = {
+  def apply[A](fs: FeatureList[A]) = {
     val res = new StringFeatureVector
     res <<= fs
     res

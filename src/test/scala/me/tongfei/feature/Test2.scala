@@ -1,11 +1,9 @@
-package me.tongfei.feature.pipe
-
-import poly.algebra.hkt.ops._
+package me.tongfei.feature
 
 /**
  * @author Tongfei Chen (ctongfei@gmail.com).
  */
-object Test extends App {
+object Test2 extends App {
 
   type Sentence = Seq[String]
 
@@ -20,7 +18,7 @@ object Test extends App {
   val fx = WordFeaturizer >>> Letter3GramFeaturizer
 
   val s = "John killed Mary".split(" ")
-  val f = fx(s)
+  val fs = fx(s)
 
   val bp = 0
 

@@ -1,60 +1,79 @@
 package me.tongfei.feature
 
-import poly.algebra.hkt._
-
 /**
- * A feature list is a list of features that can be iterated. Each item iterated is of type
- * [[me.tongfei.feature.Feature]], which contains the feature group, the feature value and the feature weight.
- *
+ * Represents a list of features extracted out of an object.
  * @author Tongfei Chen (ctongfei@gmail.com).
  */
-trait FeatureList extends Iterable[(Feature, Double)] { self =>
+trait FeatureList[+A] { self =>
 
-  /** Concatenates two feature list. */
-  def +(that: FeatureList): FeatureList = new FeatureList {
-    def iterator = self.iterator ++ that.iterator
+  def features: Iterable[(Feature[A], Double)]
+
+  def map[B](f: A => B): FeatureList[B] = FeatureList {
+    self.features.map { case (Feature(g, a), w) => (Feature(g, f(a)), w) }
   }
 
-  /** Returns the Cartesian product of two feature lists. */
-  def *(that: FeatureList): FeatureList = new FeatureList {
-    def iterator = for {
-      f1 ← self.iterator
-      f2 ← that.iterator
-    } yield ProductFeature(f1._1, f2._1) → (f1._2 * f2._2)
+  def flatMap[B](f: A => FeatureList[B]): FeatureList[B] = FeatureList {
+    for {
+      (Feature(ga, va), wa) ← self.features
+      (Feature(gb, vb), wb) ← f(va).features
+    } yield Feature(ga + "-" + gb, vb) → (wa * wb) //TODO: Piped feature?
   }
 
-  /** Joins two feature lists. */
-  def =*=(that: FeatureList): FeatureList = new FeatureList {
-    def iterator = for {
-      f1 ← self.iterator
-      f2 ← that.iterator if f1._1.value == f2._1.value
-    } yield JoinedFeature(f1._1, f2._1) → (f1._2 * f2._2)
+  def filter(f: A => Boolean): FeatureList[A] = FeatureList {
+    self.features.filter(p => f(p._1.value))
   }
 
-  /** Joins two feature lists then drop the feature value. */
-  def =?=(that: FeatureList): FeatureList = new FeatureList {
-    def iterator = for {
-      f1 ← self.iterator
-      f2 ← that.iterator if f1._1.value == f2._1.value
-    } yield EqualityFeature(f1._1, f2._1) → (f1._2 * f2._2)
+  def topK(k: Int): FeatureList[A] = FeatureList {
+    self.features.toArray.sortBy(-_._2).take(k)
   }
 
-  def toFeatureVector = StringFeatureVector(this)
+  def ++[B >: A](that: FeatureList[B]): FeatureList[B] = FeatureList {
+    self.features ++ that.features
+  }
 
-  override def toString() = iterator.mkString("\n")
+  def *[B](that: FeatureList[B]): FeatureList[(A, B)] = FeatureList {
+    for {
+      (fa, wa) ← self.features
+      (fb, wb) ← that.features
+    } yield ProductFeature(fa.group, fa.value, fb.group, fb.value) → (wa * wb)
+  }
 
+  def =?=[B >: A](that: FeatureList[B]): FeatureList[Unit] = FeatureList {
+    for {
+      (fa, wa) ← self.features
+      (fb, wb) ← that.features if fa.value == fb.value
+    } yield EqualityFeature(fa.group, fb.group) → (wa * wb)
+  }
+
+  /** Ignores the weight of the features and makes them all 1.0. */
+  def uniformWeight = FeatureList {
+    self.features.map { case (f, w) => (f, 1.0) }
+  }
+
+  /** Binarizes the feature vectors. */
+  def binarize(threshold: Double) = FeatureList {
+    self.features.filter(_._2 >= threshold)
+  }
+
+  //TODO: descretization
+
+  override def toString = features.mkString("; ")
 }
+
 
 object FeatureList {
 
-  /** Constructs an empty feature list. */
-  def empty = ofIterable(Iterable())
-
-  /** Creates a feature list based on an iterable sequence of `Feature -> Double` pairs. */
-  def ofIterable(fs: Iterable[(Feature, Double)]): FeatureList = new FeatureList {
-    def iterator = fs.iterator
+  def apply[A](fs: Iterable[(Feature[A], Double)]): FeatureList[A] = new FeatureList[A] {
+    def features = fs
   }
 
-  def apply(fs: (Feature, Double)*): FeatureList = ofIterable(fs)
+//  implicit object Monad extends ConcatenativeMonad[FeatureList] {
+//    def id[X](u: X): FeatureList[X] = FeatureList { Iterable(Feature("", u) → 1.0) }
+//    def flatMap[X, Y](fx: FeatureList[X])(f: X => FeatureList[Y]) = fx.flatMap(f)
+//    override def map[X, Y](fx: FeatureList[X])(f: X => Y) = fx.map(f)
+//    override def product[X, Y](fx: FeatureList[X])(fy: FeatureList[Y]) = fx * fy
+//    def empty[X]: FeatureList[X] = FeatureList { Iterable() }
+//    def concat[X](f1: FeatureList[X], f2: FeatureList[X]) = f1 ++ f2
+//  }
 
 }
