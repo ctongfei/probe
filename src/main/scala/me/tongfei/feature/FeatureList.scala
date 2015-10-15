@@ -12,6 +12,14 @@ trait FeatureList[+A] { self =>
     self.features.map { case (Feature(g, a), w) => (Feature(g, f(a)), w) }
   }
 
+  def assignWeights(f: A => Double): FeatureList[A] = FeatureList {
+    self.features.map { case (Feature(g, a), w) => (Feature(g, a), f(a)) }
+  }
+
+  def compact: FeatureList[A] = FeatureList {
+    self.features.groupBy(_._1) map { case (f, fs) => f → fs.map(_._2).sum }
+  }
+
   def flatMap[B](f: A => FeatureList[B]): FeatureList[B] = FeatureList {
     for {
       (Feature(ga, va), wa) ← self.features
@@ -24,7 +32,7 @@ trait FeatureList[+A] { self =>
   }
 
   def topK(k: Int): FeatureList[A] = FeatureList {
-    self.features.toArray.sortBy(-_._2).take(k)
+    compact.features.toArray.sortBy(-_._2).take(k)
   }
 
   def ++[B >: A](that: FeatureList[B]): FeatureList[B] = FeatureList {

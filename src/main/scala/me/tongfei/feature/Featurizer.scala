@@ -25,6 +25,10 @@ trait Featurizer[-A, +B] extends (A => FeatureList[B]) { self =>
     def apply(a: A) = self(a).topK(k)
   }
 
+  def assignWeights(f: B => Double): Featurizer[A, B] = new Featurizer[A, B] {
+    def apply(a: A) = self(a).assignWeights(f)
+  }
+
   def ++[A1 <: A, B1 >: B](that: Featurizer[A1, B1]): Featurizer[A1, B1] = new Featurizer[A1, B1] {
     def apply(a: A1) = self(a) ++ that(a)
   }
@@ -33,8 +37,8 @@ trait Featurizer[-A, +B] extends (A => FeatureList[B]) { self =>
     def apply(a: A1) = self(a) * that(a)
   }
 
-  def =?=[A1 <: A, B1 >: B](that: Featurizer[A1, B1]): Featurizer[A1, Unit] = new Featurizer[A1, Unit] {
-    def apply(a: A1) = self(a) =?= that(a)
+  def =?=[A1, B1 >: B](that: Featurizer[A1, B1]): Featurizer[(A, A1), Unit] = new Featurizer[(A, A1), Unit] {
+    def apply(a: (A, A1)) = self(a._1) =?= that(a._2)
   }
 
   def uniformWeight: Featurizer[A, B] = new Featurizer[A, B] {

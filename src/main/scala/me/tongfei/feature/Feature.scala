@@ -10,6 +10,13 @@ trait Feature[+A] {
 
   def name = toString
   override def toString = s"$group~$value"
+
+  override def equals(that: Any) = that match {
+    case that: Feature[A] => this.group == that.group && this.value == that.value
+    case _ => false
+  }
+
+  override def hashCode = toString.hashCode
 }
 
 object Feature {
