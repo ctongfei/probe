@@ -80,7 +80,7 @@ class AlphabetizedFeatureVector(val alphabet: Alphabet) {
   def maxNormalize: AlphabetizedFeatureVector = this * (1.0 / this.maxNorm)
 
   /** Adds the specific list of features to this feature vector. */
-  def <<=[A](fs: FeatureList[A]) = {
+  def <<=[A](fs: FeatureGroup[A]) = {
     for ((f, w) ← fs.features) {
       data(alphabet(f.toString)) += w
     }
@@ -114,7 +114,7 @@ object AlphabetizedFeatureVector {
   def empty(alphabet: Alphabet) = new AlphabetizedFeatureVector(alphabet)
 
   /** Converts an iterable list of features into a feature vector. */
-  def apply[A](alphabet: Alphabet)(list: FeatureList[A]) = {
+  def apply[A](alphabet: Alphabet)(list: FeatureGroup[A]) = {
     val r = new AlphabetizedFeatureVector(alphabet)
     r <<= list
     r

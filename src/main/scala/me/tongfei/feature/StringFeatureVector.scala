@@ -71,23 +71,19 @@ class StringFeatureVector extends DefaultMap[String, Double] {
 
   def cosSimilarity(that: StringFeatureVector) = (this dot that) / this.l2Norm / that.l2Norm
 
-  def <<=[A](fs: FeatureList[A]): Unit = {
+  def <<=[A](fs: FeatureGroup[A]): Unit = {
     for ((f, w) ← fs.features)
-      if (this.data contains f.name)
-        this.data(f.name) += w
-    else this.data += f.name → w
-  }
-
-  def <<=[A](f: (Feature[A], Double)): Unit = {
-    this <<= FeatureList(Iterable(f))
+      if (this.data contains f.toString)
+        this.data(f.toString) += w
+    else this.data += f.toString → w
   }
 
 }
 
 object StringFeatureVector {
-  def apply[A](fs: FeatureList[A]) = {
+  def apply[A](fgs: FeatureGroup[A]*) = {
     val res = new StringFeatureVector
-    res <<= fs
+    fgs foreach res.<<=
     res
   }
 }

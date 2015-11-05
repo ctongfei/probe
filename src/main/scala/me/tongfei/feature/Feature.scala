@@ -5,14 +5,13 @@ package me.tongfei.feature
  */
 trait Feature[+A] {
 
-  def group: String
-  def value: A
+  def name: String
+  def key: A
 
-  def name = toString
-  override def toString = s"$group~$value"
+  override def toString = s"$name~$key"
 
   override def equals(that: Any) = that match {
-    case that: Feature[A] => this.group == that.group && this.value == that.value
+    case that: Feature[A] => this.name == that.name && this.key == that.key
     case _ => false
   }
 
@@ -21,19 +20,23 @@ trait Feature[+A] {
 
 object Feature {
   def apply[A](g: String, v: A): Feature[A] = new Feature[A] {
-    def group = g
-    def value = v
+    def name = g
+    def key = v
   }
 
-  def unapply[A](f: Feature[A]): Option[(String, A)] = Some((f.group, f.value))
+  def unapply[A](f: Feature[A]): Option[(String, A)] = Some((f.name, f.key))
 }
 
-case class ProductFeature[+A, +B](ga: String, va: A, gb: String, vb: B) extends Feature[(A, B)] {
-  def group: String = ga + "," + gb
-  def value: (A, B) = (va, vb)
+
+
+case class SimpleFeature[+A](name: String, key: A) extends Feature[A]
+
+case class ProductFeature[+A, +B](f1: Feature[A], f2: Feature[B]) extends Feature[(A, B)] {
+  def name = f1.name + "," + f2.name
+  def key = (f1.key, f2.key)
 }
 
-case class EqualityFeature(ga: String, gb: String) extends Feature[Unit] {
-  def group: String = ga + "=" + gb
-  def value: Unit = ()
+case class EqualityFeature(name1: String, name2: String) extends Feature[Unit] {
+  def name: String = name1 + "=" + name2
+  def key: Unit = ()
 }
