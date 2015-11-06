@@ -1,4 +1,4 @@
-## feature
+## probe
 A feature engineering framework
 
 SBT:
@@ -6,5 +6,5 @@ SBT:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies += "me.tongfei" %% "feature" % "0.4.0-SNAPSHOT"
+libraryDependencies += "me.tongfei" %% "probe" % "0.4.1-SNAPSHOT"
 ```
