@@ -61,7 +61,7 @@ trait FeatureGroup[+A] { self =>
 
   def -[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = this + (-that)
 
-  def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.fast(name + "," + that.name) {
+  def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.fast(s"($name,${that.name})") {
     for {
       (ka, va) ← self.pairs
       (kb, vb) ← that.pairs
@@ -69,13 +69,6 @@ trait FeatureGroup[+A] { self =>
   }
 
   def ×[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = cartesianProduct(that)
-
-  def =?=[B >: A](that: FeatureGroup[B]): FeatureGroup[Unit] = FeatureGroup(name + "=" + that.name) {
-    for {
-      (ka, va) ← self.pairs
-      (kb, vb) ← that.pairs if ka == kb //TODO: O(n^2) => O(n)
-    } yield () → math.min(va, vb)
-  }
 
   /* value manipulation */
 
@@ -92,6 +85,12 @@ trait FeatureGroup[+A] { self =>
   }
 
   //TODO: binning / discretization
+
+  def l2Norm: Double = {
+    var sum = 0.0
+    for ((k, v) ← pairs) sum += v * v
+    math.sqrt(sum)
+  }
 
   override def toString = {
     pairs.map { case (k, v) => s"$name~$k:$v" }.mkString(" ")

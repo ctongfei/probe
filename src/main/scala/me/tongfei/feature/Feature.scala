@@ -32,11 +32,11 @@ object Feature {
 case class SimpleFeature[+A](name: String, key: A) extends Feature[A]
 
 case class ProductFeature[+A, +B](f1: Feature[A], f2: Feature[B]) extends Feature[(A, B)] {
-  def name = f1.name + "," + f2.name
+  def name = s"(${f1.name},${f2.name})"
   def key = (f1.key, f2.key)
 }
 
-case class EqualityFeature(name1: String, name2: String) extends Feature[Unit] {
-  def name: String = name1 + "=" + name2
+case class CompositeFeature(func: String, name1: String, name2: String) extends Feature[Unit] {
+  def name: String = s"func($name1,$name2)"
   def key: Unit = ()
 }

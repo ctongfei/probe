@@ -45,10 +45,6 @@ trait Featurizer[-A, +B] extends (A => FeatureGroup[B]) { self =>
 
   def ×[A1, C](that: Featurizer[A1, C]) = cartesianProduct(that)
 
-  def =?=[A1, C >: B](that: Featurizer[A1, C]): Featurizer[(A, A1), Unit] = Featurizer(name + "=" + that.name) { case (a, a1) =>
-    self(a) =?= that(a1)
-  }
-
 }
 
 object Featurizer {
