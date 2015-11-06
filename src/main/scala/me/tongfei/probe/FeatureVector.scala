@@ -1,5 +1,6 @@
 package me.tongfei.probe
 
+import me.tongfei.probe.util._
 import scala.collection._
 
 /**
@@ -93,6 +94,7 @@ class FeatureVector {
     sfv
   }
 
+  /** Returns the LIBSVM style string representation of this feature vector. */
   override def toString = groups.mkString(" ")
 
 }
@@ -102,6 +104,19 @@ object FeatureVector {
   def apply(fgs: FeatureGroup[Any]*): FeatureVector = {
     val fv = new FeatureVector
     fv.g ++= fgs.map(g => g.name → g)
+    fv
+  }
+
+  /** Reads a LIBSVM style string representation of a feature vector.
+    * @note The type of feature keys will be obliterated: they will be `String` in the returned vector.
+    */
+  def parse(s: String) = {
+    val groups = s.split(" ").view.map { case sm"$fn~$k:$v" => (fn, k, v.toDouble) }.groupBy(_._1)
+    val fv = new FeatureVector
+    for (g ← groups) {
+      val fg = FeatureGroup(g._1) { g._2.map { case (fn, k, v) => (k, v) } }
+      fv += fg
+    }
     fv
   }
 

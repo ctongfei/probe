@@ -31,6 +31,9 @@ object Test2 extends App {
   val fvs1 = fx(s1)
   val fvs2 = fx(s2)
 
+  val s = fvs1.toString
+  val fvs1restored = FeatureVector.parse(s)
+
   val j = fvs1 + fvs2
   val j2 = -fvs1
   val j3 = fvs1 - fvs2
