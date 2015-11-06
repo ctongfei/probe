@@ -70,7 +70,7 @@ trait FeatureGroup[+A] { self =>
 
   def ×[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = cartesianProduct(that)
 
-  def =?=[B >: A](that: FeatureGroup[B]): FeatureGroup[Unit] = FeatureGroup.fast(name + "=" + that.name) {
+  def =?=[B >: A](that: FeatureGroup[B]): FeatureGroup[Unit] = FeatureGroup(name + "=" + that.name) {
     for {
       (ka, va) ← self.pairs
       (kb, vb) ← that.pairs if ka == kb //TODO: O(n^2) => O(n)
