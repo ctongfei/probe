@@ -15,7 +15,7 @@ trait BinaryFeatureGroup[+A] extends FeatureGroup[A] { self =>
 
   override def features = keys map { a => Feature(name, a) → 1.0 }
 
-  override def assignValues(f: A => Double): FeatureGroup[A] = FeatureGroup(name) {
+  override def assignValues(f: A => Double): FeatureGroup[A] = FeatureGroup.fast(name) {
     keys map (k => k → f(k))
   }
 
@@ -24,6 +24,11 @@ trait BinaryFeatureGroup[+A] extends FeatureGroup[A] { self =>
 object BinaryFeatureGroup {
 
   def apply[A](g: String)(ks: Iterable[A]): BinaryFeatureGroup[A] = new BinaryFeatureGroup[A] {
+    def keys = ks.toSet
+    def name = g
+  }
+
+  private[feature] def fast[A](g: String)(ks: Iterable[A]): BinaryFeatureGroup[A] = new BinaryFeatureGroup[A] {
     def keys = ks
     def name = g
   }

@@ -8,7 +8,7 @@ object Test extends App {
   val fWord = BinaryFeatureGroup("word")(Array(1, 2, 3, 1, 2, 4, 6, 7))
   val fX = FeatureGroup("idf")((0 until 4).map(i => i → (1.0 / i)))
 
-  val g1 = fWord * fX
+  val g1 = fWord cartesianProduct fX
   val g3 = fWord =?= fX
 
   val sf1 = StringFeatureVector(g1)

@@ -60,7 +60,7 @@ class StringFeatureVector extends DefaultMap[String, Double] {
 
   def l2Normalize = this * (1.0 / this.l2Norm)
 
-  def l1norm: Double = {
+  def l1Norm: Double = {
     var res = 0.0
     for ((f, w) ← this)
       res += math.abs(w)

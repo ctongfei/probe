@@ -16,10 +16,21 @@ trait FeatureGroup[+A] { self =>
 
   def features = pairs map { case (k, v) => Feature(name, k) → v }
 
-  def appendName(n: String) = FeatureGroup(name + "-" + n)(pairs)
+
+  private def compact = FeatureGroup.fast(name) {
+    pairs.groupBy(_._1) map { case (f, fs) => f → fs.map(_._2).sum }
+  }
+
+  // HELPER FUNCTIONS
+
+  def appendName(n: String) = FeatureGroup.fast(name + "-" + n)(pairs)
 
   def map[B](f: A => B) = FeatureGroup(name) {
     pairs map { case (k, v) => f(k) → v }
+  }
+
+  def mapValues(f: Double => Double) = FeatureGroup.fast(name) {
+    pairs map { case (k, v) => k → f(v) }
   }
 
   def flatMap[B](f: Featurizer[A, B]) = FeatureGroup(name + "-" + f.name) {
@@ -29,53 +40,68 @@ trait FeatureGroup[+A] { self =>
     } yield kb → (va * vb)
   }
 
-  def filter(f: A => Boolean) = FeatureGroup(name) {
+  def filter(f: A => Boolean) = FeatureGroup.fast(name) {
     pairs filter { case (v, _) => f(v) }
   }
 
-  def compact = FeatureGroup(name) {
-    pairs.groupBy(_._1) map { case (f, fs) => f → fs.map(_._2).sum }
+  def topK(k: Int) = FeatureGroup.fast(name) {
+    pairs.toArray.sortBy(-_._2).take(k)
   }
 
-  def topK(k: Int) = FeatureGroup(name) {
-    compact.pairs.toArray.sortBy(-_._2).take(k)
-  }
+  def unary_- : FeatureGroup[A] = mapValues(-_)
 
+  def *(k: Double): FeatureGroup[A] = mapValues(_ * k)
 
   /* binary combinators */
 
-  def *[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup(name + "," + that.name) {
+  def +[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = {
+    require(name == that.name)
+    FeatureGroup(name)(this.pairs ++ that.pairs)
+  }
+
+  def -[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = this + (-that)
+
+  def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.fast(name + "," + that.name) {
     for {
       (ka, va) ← self.pairs
       (kb, vb) ← that.pairs
     } yield (ka, kb) → (va * vb)
   }
 
-  def =?=[B >: A](that: FeatureGroup[B]): FeatureGroup[Unit] = FeatureGroup(name + "=" + that.name) {
+  def ×[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = cartesianProduct(that)
+
+  def =?=[B >: A](that: FeatureGroup[B]): FeatureGroup[Unit] = FeatureGroup.fast(name + "=" + that.name) {
     for {
-      (ka, va) ← self.compact.pairs
-      (kb, vb) ← that.compact.pairs if ka == kb
+      (ka, va) ← self.pairs
+      (kb, vb) ← that.pairs if ka == kb //TODO: O(n^2) => O(n)
     } yield () → math.min(va, vb)
   }
 
   /* value manipulation */
 
-  def uniformValue: BinaryFeatureGroup[A] = BinaryFeatureGroup(name) {
+  def uniformValue: BinaryFeatureGroup[A] = BinaryFeatureGroup.fast(name) {
     pairs map { _._1 }
   }
 
-  def assignValues(f: A => Double): FeatureGroup[A] = FeatureGroup(name) {
+  def assignValues(f: A => Double): FeatureGroup[A] = FeatureGroup.fast(name) {
     pairs map { case (k, v) => (k, f(k) * v) }
   }
 
-  def binarize(threshold: Double) = BinaryFeatureGroup(name) {
+  def binarize(threshold: Double) = BinaryFeatureGroup.fast(name) {
     pairs filter { _._2 >= threshold } map { _._1 }
   }
 
   //TODO: binning / discretization
+
+  override def toString = {
+    pairs.map { case (k, v) => s"$name~$k:$v" }.mkString(" ")
+  }
 }
 
 object FeatureGroup {
+
+  def count[A](g: String)(ks: Iterable[A]): FeatureGroup[A] =
+    fast(g)(ks.map(k => k → 1.0)).compact
 
   /**
     * Creates a real-valued feature group.
@@ -83,10 +109,17 @@ object FeatureGroup {
     * @param fvs sequence of (key, value) pairs
     * @tparam A type of key
     */
-  def apply[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
+  def apply[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] = fast(g)(fvs).compact
+
+  private[feature] def fast[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
     new FeatureGroup[A] {
       def name = g
       def pairs = fvs
     }
+
+  def empty(g: String): FeatureGroup[Nothing] = new FeatureGroup[Nothing] {
+    def pairs = Iterable()
+    def name = g
+  }
 
 }
