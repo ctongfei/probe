@@ -1,4 +1,4 @@
-package me.tongfei.feature
+package me.tongfei.probe
 
 import scala.collection._
 

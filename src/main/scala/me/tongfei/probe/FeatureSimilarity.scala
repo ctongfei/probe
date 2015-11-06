@@ -1,4 +1,4 @@
-package me.tongfei.feature
+package me.tongfei.probe
 
 /**
   * Represents a similarity function that when given two feature groups,

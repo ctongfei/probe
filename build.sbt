@@ -1,4 +1,4 @@
-name := "feature"
+name := "probe"
 
 organization := "me.tongfei"
 
@@ -31,7 +31,7 @@ publishTo := {
 publishArtifact in Test := false
 
 pomExtra :=
-  <url>http://github.com/ctongfei/feature</url>
+  <url>http://github.com/ctongfei/probe</url>
     <licenses>
       <license>
         <name>MIT</name>
@@ -40,8 +40,8 @@ pomExtra :=
       </license>
     </licenses>
     <scm>
-      <url>git@github.com:ctongfei/feature.git</url>
-      <connection>scm:git:git@github.com:ctongfei/feature.git</connection>
+      <url>git@github.com:ctongfei/probe.git</url>
+      <connection>scm:git:git@github.com:ctongfei/probe.git</connection>
     </scm>
     <developers>
       <developer>

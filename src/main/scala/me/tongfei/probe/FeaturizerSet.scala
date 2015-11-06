@@ -1,4 +1,4 @@
-package me.tongfei.feature
+package me.tongfei.probe
 
 /**
   * Represents a set of featurizers.

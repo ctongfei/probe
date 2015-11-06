@@ -1,4 +1,4 @@
-package me.tongfei.feature
+package me.tongfei.probe
 
 /**
   * Represents a feature extractor that extracts a sequence of features with the same group name.

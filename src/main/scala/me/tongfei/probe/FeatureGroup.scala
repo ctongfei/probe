@@ -1,4 +1,4 @@
-package me.tongfei.feature
+package me.tongfei.probe
 
 /**
   * Represents a group of features (having the same group name)
@@ -110,7 +110,7 @@ object FeatureGroup {
     */
   def apply[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] = fast(g)(fvs).compact
 
-  private[feature] def fast[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
+  private[probe] def fast[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
     new FeatureGroup[A] {
       def name = g
       def pairs = fvs

@@ -1,4 +1,4 @@
-package me.tongfei.feature
+package me.tongfei.probe
 
 /**
   * Represents a group of features (having the same group name)
@@ -28,7 +28,7 @@ object BinaryFeatureGroup {
     def name = g
   }
 
-  private[feature] def fast[A](g: String)(ks: Iterable[A]): BinaryFeatureGroup[A] = new BinaryFeatureGroup[A] {
+  private[probe] def fast[A](g: String)(ks: Iterable[A]): BinaryFeatureGroup[A] = new BinaryFeatureGroup[A] {
     def keys = ks
     def name = g
   }
