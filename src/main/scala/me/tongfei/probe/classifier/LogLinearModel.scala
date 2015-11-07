@@ -31,7 +31,7 @@ class LogLinearModel private(featureAlphabet: Alphabet, model: Model)
   def parameters: Iterable[(String, Double)] = {
     val w = model.getFeatureWeights
     (1 until featureAlphabet.size)
-      .filter { i => w(i - 1) != 0.0 }
+      .filter { i => w(i - 1) != 0.0 } // !!! Liblinear stores the weight for feature i in w(i - 1) !!!
       .map { i => featureAlphabet.get(i) → w(i - 1) }
       .sortBy(-_._2)
   }
