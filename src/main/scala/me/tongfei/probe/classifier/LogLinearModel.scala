@@ -30,9 +30,9 @@ class LogLinearModel private(featureAlphabet: Alphabet, model: Model)
   /** Returns the list of non-zero parameters (feature weights) in descending order. */
   def parameters: Iterable[(String, Double)] = {
     val w = model.getFeatureWeights
-    (0 until featureAlphabet.size)
-      .filter { i => w(i) != 0.0 }
-      .map { i => featureAlphabet.get(i) → w(i) }
+    (1 until featureAlphabet.size)
+      .filter { i => w(i - 1) != 0.0 }
+      .map { i => featureAlphabet.get(i) → w(i - 1) }
       .sortBy(-_._2)
   }
 
@@ -63,7 +63,6 @@ object LogLinearModel {
       }.toArray.sortBy(_.getIndex)
     }.toArray
     problem.y = data.map(_._2.toDouble).toArray
-
 
     val solver = SolverType.L1R_LR
     val parameter = new Parameter(solver, c, tol)
