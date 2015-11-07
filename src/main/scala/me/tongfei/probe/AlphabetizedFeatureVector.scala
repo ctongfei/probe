@@ -114,9 +114,9 @@ object AlphabetizedFeatureVector {
   def empty(alphabet: Alphabet) = new AlphabetizedFeatureVector(alphabet)
 
   /** Converts an iterable list of features into a feature vector. */
-  def apply[A](alphabet: Alphabet)(list: FeatureGroup[A]) = {
+  def apply[A](alphabet: Alphabet)(list: FeatureGroup[A]*) = {
     val r = new AlphabetizedFeatureVector(alphabet)
-    r <<= list
+    list foreach { g => r <<= g }
     r
   }
 

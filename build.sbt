@@ -2,13 +2,15 @@ name := "probe"
 
 organization := "me.tongfei"
 
-version := "0.4.1-SNAPSHOT"
+version := "0.4.2-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 
 isSnapshot := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
+
+libraryDependencies += "de.bwaldvogel" % "liblinear" % "1.95"
 
 // libraryDependencies += "me.tongfei" %% "poly-algebra" % "0.2.10-SNAPSHOT" changing()
 
