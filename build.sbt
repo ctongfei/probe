@@ -2,7 +2,7 @@ name := "probe"
 
 organization := "me.tongfei"
 
-version := "0.4.3-SNAPSHOT"
+version := "0.4.4-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 

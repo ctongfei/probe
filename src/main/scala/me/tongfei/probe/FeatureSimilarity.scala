@@ -53,7 +53,8 @@ object FeatureSimilarity {
       var ip = 0.0
       for ((_, (va, vb)) ← zipKey(fa, fb))
         ip += va * vb
-      ip / fa.l2Norm / fb.l2Norm
+      val res = ip / fa.l2Norm / fb.l2Norm
+      if (res.isNaN) 0.0 else res
     }
   }
 
