@@ -26,6 +26,8 @@ object Test2 extends App {
   val fx = FeaturizerSet(top3_words, top6_3grams)
   val fx1 = FeaturizerSet(top3_words)
 
+  val singleFeature = SingleFeature("a")(2)
+
   val ff = FeaturizerSet(FeatureSimilarity.Cosine(top3_words, top3_words))
   val ff12 = ff(s1, s2)
   val fvs1 = fx(s1)

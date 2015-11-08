@@ -41,7 +41,7 @@ class LogLinearModel private(featureAlphabet: Alphabet, model: Model)
 object LogLinearModel {
 
   /**
-    * Fits a log-linear model using L-1 regularization.
+    * Fits a log-linear model using L,,1,, regularization.
     * @param c regularization coefficient
     * @param tol Tolerance as stopping criteria
     * @param data A sequence of training data. Each sample should be of type `(FeatureVector, Int)`.

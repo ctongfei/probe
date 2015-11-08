@@ -5,7 +5,7 @@ package me.tongfei.probe
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.0
   */
-trait FeaturizerSet[A] extends (A => FeatureVector) {
+trait FeaturizerSet[-A] extends (A => FeatureVector) {
 
   def featurizers: Seq[Featurizer[A, Any]]
 
