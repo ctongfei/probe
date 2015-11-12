@@ -8,7 +8,7 @@ import me.tongfei.probe.util._
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.0
   */
-trait FeatureGroup[+A] { self =>
+trait FeatureGroup[A] { self =>
 
   /** The name that designates the group of this feature set. */
   def name: String
@@ -56,12 +56,12 @@ trait FeatureGroup[+A] { self =>
 
   /* binary combinators */
 
-  def +[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = {
+  def +(that: FeatureGroup[A]): FeatureGroup[A] = {
     require(name == that.name)
     FeatureGroup(name)(this.pairs ++ that.pairs)
   }
 
-  def -[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = this + (-that)
+  def -(that: FeatureGroup[A]): FeatureGroup[A] = this + (-that)
 
   def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.fast(s"($name,${that.name})") {
     for {
@@ -120,7 +120,7 @@ object FeatureGroup {
       def pairs = fvs
     }
 
-  def empty(g: String): FeatureGroup[Nothing] = new FeatureGroup[Nothing] {
+  def empty[A](g: String): FeatureGroup[A] = new FeatureGroup[A] {
     def pairs = Iterable()
     def name = g
   }

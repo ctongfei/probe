@@ -11,7 +11,7 @@ object LogLinearModelTest extends App {
     FeatureGroup.count("word")(s.split(' '))
   }
 
-  val fx = FeaturizerSet(bow)
+  val fx = bow
 
   val xs = Seq(
     FeatureVector(fx("a a a a a a a ")) → 1,

@@ -23,13 +23,14 @@ object Test4 extends App {
   }
 
   val fShift = Featurizer("shifted") { (s: String) =>
+    println(s"@$s")
     FeatureGroup.count("shifted")(s.map(c => (c + 1).toChar.toString))
   }
 
   val s = "John killed Mary"
-  val f = FeaturizerSet(fWords >>> fShift, fCapitalWords) >>> FeaturizerSet(f1gram, f2gram)
-
-  val fs = FeatureVector(f(s))
+  val f = fWords >>> ((fShift ++ fCapitalWords) >>> (f1gram ++ f2gram))
+  val fs = f(s)
+  val fv = FeatureVector.from(fs)
 
   val bp = 0
 }

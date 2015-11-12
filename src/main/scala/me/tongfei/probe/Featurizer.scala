@@ -4,17 +4,9 @@ package me.tongfei.probe
   * Represents a feature extractor that extracts a sequence of features with the same group name.
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
-trait Featurizer[-A, +B] extends (A => FeatureGroup[B]) { self =>
+trait Featurizer[-A, B] extends (A => FeatureGroup[B]) { self =>
 
   def name: String
-
-  def applyOnGroup(fga: FeatureGroup[A]): FeatureGroup[B] = new FeatureGroup[B] {
-    def name = s"${fga.name}-${self.name}"
-    def pairs = for {0.4.6
-      (ka, va) ← fga.pairs
-      (kb, vb) ← self(ka).pairs
-    } yield (kb, va * vb)
-  }
 
   def map[C](f: B => C): Featurizer[A, C] = Featurizer(name) { a =>
     self(a).map(f)
@@ -44,14 +36,17 @@ trait Featurizer[-A, +B] extends (A => FeatureGroup[B]) { self =>
     self(a).binarize(threshold)
   }
 
-  def >>>[C](f: Featurizer[B, C]) = self andThen f
+  def ++[A1 <: A](that: Featurizer[A1, B]): FeaturizerSet[A1, B] = SimpleFeaturizerSet(Iterable(self, that))
 
+  def >>>[C](that: Featurizer[B, C]) = self andThen that
 
-  def cartesianProduct[A1, C](that: Featurizer[A1, C]): Featurizer[(A, A1), (B, C)] = Featurizer(name + "," + that.name) { case (a, a1) =>
+  def >>>[C](that: FeaturizerSet[B, C]) = SimpleFeaturizerSet(Iterable(self)) >>> that
+
+  def cartesianProduct[A1, B1](that: Featurizer[A1, B1]): Featurizer[(A, A1), (B, B1)] = Featurizer(name + "," + that.name) { case (a, a1) =>
     self(a) cartesianProduct that(a1)
   }
 
-  def ×[A1, C](that: Featurizer[A1, C]) = cartesianProduct(that)
+  def ×[A1, B1](that: Featurizer[A1, B1]) = cartesianProduct(that)
 
 }
 

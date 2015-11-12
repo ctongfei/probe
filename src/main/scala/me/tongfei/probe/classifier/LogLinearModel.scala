@@ -10,17 +10,17 @@ import scala.collection._
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.2
   */
-class LogLinearModel private(featureAlphabet: Alphabet, model: Model)
-  extends (FeatureVector => Int)
+class LogLinearModel[A] private(featureAlphabet: Alphabet, model: Model)
+  extends (FeatureVector[A] => Int)
 {
 
   /** Classifies a feature vector into positive (1) or negative (0). */
-  def apply(fx: FeatureVector): Int = {
+  def apply(fx: FeatureVector[A]): Int = {
     if (score(fx) <= 0.5) 0 else 1
   }
 
   /** Returns P(1 | fx). */
-  def score(fx: FeatureVector): Double = {
+  def score(fx: FeatureVector[A]): Double = {
     val afv = AlphabetizedFeatureVector(featureAlphabet)(fx.groups.toSeq: _*)
     val x = afv.pairs.map { t =>
       new FeatureNode(t._1, t._2).asInstanceOf[de.bwaldvogel.liblinear.Feature]
@@ -50,7 +50,7 @@ object LogLinearModel {
     * @param data A sequence of training data. Each sample should be of type `(FeatureVector, Int)`.
     * @return A log-linear model
     */
-  def fitWithL1Regularization(c: Double, tol: Double = 0.001)(data: Iterable[(FeatureVector, Int)]): LogLinearModel = {
+  def fitWithL1Regularization[A](c: Double, tol: Double = 0.001)(data: Iterable[(FeatureVector[A], Int)]): LogLinearModel[A] = {
 
     val featureAlphabet = new Alphabet
     val fvs = data map { _._1 }

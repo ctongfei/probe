@@ -23,15 +23,15 @@ object Test2 extends App {
 
   val t = top6_3grams(s1)
 
-  val fx = FeaturizerSet(top3_words, top6_3grams)
-  val fx1 = FeaturizerSet(top3_words)
+  val fx = top3_words ++ top6_3grams
+  val fx1 = top3_words
 
   val singleFeature = SingleFeature("a")(2)
 
-  val ff = FeaturizerSet(FeatureSimilarity.Cosine(top3_words, top3_words))
+  val ff = FeatureSimilarity.Cosine(top3_words, top3_words)
   val ff12 = ff(s1, s2)
-  val fvs1 = FeatureVector(fx(s1))
-  val fvs2 = FeatureVector(fx(s2))
+  val fvs1 = FeatureVector.from(fx(s1))
+  val fvs2 = FeatureVector.from(fx(s2))
 
   val s = fvs1.toString
   val fvs1restored = FeatureVector.parse(s)

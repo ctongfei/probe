@@ -1,11 +1,12 @@
 package me.tongfei.probe
-/**
-  * This package enables string matching using string interpolators.
-  * @author Tongfei Chen (ctongfei@gmail.com).
-  */
+
 package object util {
 
-  def format(d: Double): String = f"$d%.4f"
+  def format(d: Double): String = {
+    val s1 = s"$d"
+    val s2 = f"$d%.4f"
+    if (s1.length > s2.length) s2 else s1
+  }
 
   implicit class StringMatch(ctx: StringContext) {
 

@@ -7,7 +7,7 @@ package me.tongfei.probe
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.0
   */
-trait BinaryFeatureGroup[+A] extends FeatureGroup[A] { self =>
+trait BinaryFeatureGroup[A] extends FeatureGroup[A] { self =>
 
   def keys: Iterable[A]
 
