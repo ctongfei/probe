@@ -111,7 +111,10 @@ object FeatureVector {
     * @note The type of feature keys will be obliterated: they will be `String` in the returned vector.
     */
   def parse(s: String) = {
-    val groups = s.split(" ").view.map { case sm"$fn~$k:$v" => (fn, k, v.toDouble) }.groupBy(_._1)
+    val groups = s.split(" ").map {
+      case sm"$fn~$k:$v" => (fn, k, v.toDouble)
+      case sm"$fn:$v" => (fn, (), v.toDouble)
+    }.groupBy(_._1)
     val fv = new FeatureVector
     for (g ← groups) {
       val fg = FeatureGroup(g._1) { g._2.map { case (fn, k, v) => (k, v) } }

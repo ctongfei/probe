@@ -58,4 +58,19 @@ object FeatureSimilarity {
     }
   }
 
+  object Jaccard extends FeatureSimilarity {
+    def similarityName = "jaccard"
+    def similarity[C](fa: FeatureGroup[C], fb: FeatureGroup[C]) = {
+      var minSum = 0.0
+      var maxSum = 0.0
+      val ma = fa.pairs.toMap
+      val mb = fb.pairs.toMap
+      for (k ← ma.keySet ++ mb.keySet) {
+        minSum += math.min(ma.getOrElse(k, 0.0), mb.getOrElse(k, 0.0))
+        maxSum += math.max(ma.getOrElse(k, 0.0), mb.getOrElse(k, 0.0))
+      }
+      minSum / maxSum
+    }
+  }
+
 }

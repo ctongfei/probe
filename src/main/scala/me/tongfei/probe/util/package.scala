@@ -5,6 +5,8 @@ package me.tongfei.probe
   */
 package object util {
 
+  def format(d: Double): String = f"$d%.4f"
+
   implicit class StringMatch(ctx: StringContext) {
 
     /** Enables the "sm" string interpolator. */

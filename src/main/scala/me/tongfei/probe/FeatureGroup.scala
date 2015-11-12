@@ -1,5 +1,7 @@
 package me.tongfei.probe
 
+import me.tongfei.probe.util._
+
 /**
   * Represents a group of features (having the same group name)
   * that has real-valued weights.
@@ -93,7 +95,9 @@ trait FeatureGroup[+A] { self =>
   }
 
   override def toString = {
-    pairs.map { case (k, v) => s"$name~$k:$v" }.mkString(" ")
+    pairs.map { case (k, v) =>
+      if (k != ()) s"$name~$k:$v" else s"$name:${format(v)}"
+    }.mkString(" ")
   }
 }
 
