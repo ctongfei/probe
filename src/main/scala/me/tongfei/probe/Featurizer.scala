@@ -36,11 +36,9 @@ trait Featurizer[-A, B] extends (A => FeatureGroup[B]) { self =>
     self(a).binarize(threshold)
   }
 
-  def ++[A1 <: A](that: Featurizer[A1, B]): FeaturizerSet[A1, B] = SimpleFeaturizerSet(Iterable(self, that))
-
   def >>>[C](that: Featurizer[B, C]) = self andThen that
 
-  def >>>[C](that: FeaturizerSet[B, C]) = SimpleFeaturizerSet(Iterable(self)) >>> that
+  def >>>[C](that: FeatureExtractor[B, C]) = featurizerToFeatureExtractor(self) >>> that
 
   def cartesianProduct[A1, B1](that: Featurizer[A1, B1]): Featurizer[(A, A1), (B, B1)] = Featurizer(name + "," + that.name) { case (a, a1) =>
     self(a) cartesianProduct that(a1)
@@ -51,8 +49,21 @@ trait Featurizer[-A, B] extends (A => FeatureGroup[B]) { self =>
 }
 
 object Featurizer {
-  def apply[A, B](n: String)(f: A => FeatureGroup[B]): Featurizer[A, B] = new Featurizer[A, B] {
+
+  private[probe] def apply[A, B](n: String)(f: A => FeatureGroup[B]): Featurizer[A, B] = new Featurizer[A, B] {
     def name = n
     def apply(a: A) = f(a)
   }
+
+  def count[A, B](name: String)(f: A => Iterable[B]) = apply(name)((a: A) => FeatureGroup.count(name)(f(a)))
+
+  def binary[A, B](name: String)(f: A => Iterable[B]) = apply(name)((a: A) => BinaryFeatureGroup(name)(f(a)))
+
+  def realValued[A, B](name: String)(f: A => Iterable[(B, Double)]) = apply(name)((a: A) => FeatureGroup(name)(f(a)))
+
+  def singleCategorical[A, B](name: String)(f: A => B) = apply(name)((a: A) => SingleCategoricalFeature(name)(f(a)))
+
+  def singleNumerical[A](name: String)(f: A => Double) = apply(name)((a: A) => SingleNumericalFeature(name)(f(a)))
+
+  def realVector[A](name: String)(f: A => Array[Double]) = apply(name)((a: A) => DenseVectorFeature(name)(f(a)))
 }

@@ -23,11 +23,6 @@ trait BinaryFeatureGroup[A] extends FeatureGroup[A] { self =>
 
 object BinaryFeatureGroup {
 
-  def single[A](g: String)(k: A): BinaryFeatureGroup[A] = new BinaryFeatureGroup[A] {
-    def keys = Iterable(k)
-    def name = g
-  }
-
   def apply[A](g: String)(ks: Iterable[A]): BinaryFeatureGroup[A] = new BinaryFeatureGroup[A] {
     def keys = ks.toSet
     def name = g

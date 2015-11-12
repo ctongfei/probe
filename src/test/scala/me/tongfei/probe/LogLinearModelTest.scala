@@ -7,9 +7,7 @@ import me.tongfei.probe.classifier._
   */
 object LogLinearModelTest extends App {
 
-  val bow = Featurizer("word") { (s: String) =>
-    FeatureGroup.count("word")(s.split(' '))
-  }
+  val bow = Featurizer.count("word") { (s: String) => s.split(' ') }
 
   val fx = bow
 
