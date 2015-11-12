@@ -96,7 +96,7 @@ trait FeatureGroup[+A] { self =>
 
   override def toString = {
     pairs.map { case (k, v) =>
-      if (k != ()) s"$name~$k:$v" else s"$name:${format(v)}"
+      if (k != ()) s"$name~$k:${format(v)}" else s"$name:${format(v)}"
     }.mkString(" ")
   }
 }

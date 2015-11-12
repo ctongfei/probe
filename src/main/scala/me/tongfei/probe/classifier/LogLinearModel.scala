@@ -16,15 +16,18 @@ class LogLinearModel private(featureAlphabet: Alphabet, model: Model)
 
   /** Classifies a feature vector into positive (1) or negative (0). */
   def apply(fx: FeatureVector): Int = {
+    if (score(fx) <= 0.5) 0 else 1
+  }
 
+  /** Returns P(1 | fx). */
+  def score(fx: FeatureVector): Double = {
     val afv = AlphabetizedFeatureVector(featureAlphabet)(fx.groups.toSeq: _*)
     val x = afv.pairs.map { t =>
       new FeatureNode(t._1, t._2).asInstanceOf[de.bwaldvogel.liblinear.Feature]
     }.toArray.sortBy(_.getIndex)
     val scores = Array.ofDim[Double](2)
     val _ = Linear.predictProbability(model, x, scores)
-
-    if (scores(0) <= 0.5) 0 else 1
+    scores(0)
   }
 
   /** Returns the list of non-zero parameters (feature weights) in descending order. */

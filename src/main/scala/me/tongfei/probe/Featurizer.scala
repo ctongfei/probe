@@ -8,6 +8,14 @@ trait Featurizer[-A, +B] extends (A => FeatureGroup[B]) { self =>
 
   def name: String
 
+  def applyOnGroup(fga: FeatureGroup[A]): FeatureGroup[B] = new FeatureGroup[B] {
+    def name = s"${fga.name}-${self.name}"
+    def pairs = for {0.4.6
+      (ka, va) ← fga.pairs
+      (kb, vb) ← self(ka).pairs
+    } yield (kb, va * vb)
+  }
+
   def map[C](f: B => C): Featurizer[A, C] = Featurizer(name) { a =>
     self(a).map(f)
   }

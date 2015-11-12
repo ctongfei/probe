@@ -101,7 +101,9 @@ class FeatureVector {
 
 object FeatureVector {
 
-  def apply(fgs: FeatureGroup[Any]*): FeatureVector = {
+  def apply(fgs: FeatureGroup[Any]*): FeatureVector = apply(fgs)
+
+  def apply(fgs: Iterable[FeatureGroup[Any]]): FeatureVector = {
     val fv = new FeatureVector
     fv.g ++= fgs.map(g => g.name → g)
     fv

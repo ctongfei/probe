@@ -30,8 +30,8 @@ object Test2 extends App {
 
   val ff = FeaturizerSet(FeatureSimilarity.Cosine(top3_words, top3_words))
   val ff12 = ff(s1, s2)
-  val fvs1 = fx(s1)
-  val fvs2 = fx(s2)
+  val fvs1 = FeatureVector(fx(s1))
+  val fvs2 = FeatureVector(fx(s2))
 
   val s = fvs1.toString
   val fvs1restored = FeatureVector.parse(s)
@@ -42,9 +42,9 @@ object Test2 extends App {
   val j4 = fvs1 * 0.5
 
   val fcos = FeatureSimilarity.Cosine(top3_words, top3_words)
-  val jcos5 = fcos(s1, s2)
+  val jcos5 = fcos((s1, s2))
 
-  val j5 = fx1(s1) cosSimilarity fx1(s2)
+  val j5 = FeatureVector(fx1(s1)) cosSimilarity FeatureVector(fx1(s2))
 
   val bp = 0
 
