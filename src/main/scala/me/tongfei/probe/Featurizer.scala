@@ -8,33 +8,46 @@ trait Featurizer[-A, B] extends (A => FeatureGroup[B]) { self =>
 
   def name: String
 
-  def map[C](f: B => C): Featurizer[A, C] = Featurizer(name) { a =>
+  def appendName(n: String) = Featurizer(s"$name-$n") { (a: A) =>
+    self(a).appendName(n)
+  }
+
+  def changeName(n: String) = Featurizer(n) { (a: A) =>
+    self(a).changeName(n)
+  }
+
+  def map[C](f: B => C) = Featurizer(name) { (a: A) =>
     self(a).map(f)
   }
 
-  def andThen[C](f: Featurizer[B, C]): Featurizer[A, C] = Featurizer(name + "-" + f.name) { a =>
+  def andThen[C](f: Featurizer[B, C]) = Featurizer(name + "-" + f.name) { (a: A) =>
     self(a).flatMap(f)
   }
 
-  def filter(f: B => Boolean): Featurizer[A, B] = Featurizer(name) { a =>
+  def filter(f: B => Boolean) = Featurizer(name) { (a: A) =>
     self(a).filter(f)
   }
 
-  def topK(k: Int): Featurizer[A, B] = Featurizer(name) { a =>
+  def topK(k: Int): Featurizer[A, B] = Featurizer(name) { (a: A) =>
     self(a).topK(k)
   }
 
-  def assignWeights(f: B => Double): Featurizer[A, B] = Featurizer(name) { a =>
+  def assignWeights(f: B => Double) = Featurizer(name) { (a: A) =>
     self(a).assignValues(f)
   }
 
-  def uniformWeight: Featurizer[A, B] = Featurizer(name) { a =>
+  def uniformWeight = Featurizer(name) { (a: A) =>
     self(a).uniformValue
   }
 
-  def binarize(threshold: Double): Featurizer[A, B] = Featurizer(name) { a =>
+  def binarize(threshold: Double) = Featurizer(name) { (a: A) =>
     self(a).binarize(threshold)
   }
+
+  //TODO: optimization?
+  def discretize(thresholds: Seq[Double]) = ConcatenatedFeatureExtractor(thresholds map { t =>
+    TrivialFeatureExtractor(self binarize t appendName s"$t+")
+  })
 
   def >>>[C](that: Featurizer[B, C]) = self andThen that
 

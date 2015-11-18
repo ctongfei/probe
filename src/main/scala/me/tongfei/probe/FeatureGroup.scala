@@ -25,6 +25,8 @@ trait FeatureGroup[A] { self =>
 
   // HELPER FUNCTIONS
 
+  def changeName(n: String) = FeatureGroup.fast(n)(pairs)
+  
   def appendName(n: String) = FeatureGroup.fast(name + "-" + n)(pairs)
 
   def map[B](f: A => B) = FeatureGroup(name) {
@@ -85,8 +87,6 @@ trait FeatureGroup[A] { self =>
   def binarize(threshold: Double) = BinaryFeatureGroup.fast(name) {
     pairs filter { _._2 >= threshold } map { _._1 }
   }
-
-  //TODO: binning / discretization
 
   def l2Norm: Double = {
     var sum = 0.0

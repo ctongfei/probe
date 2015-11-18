@@ -16,16 +16,15 @@ trait FeatureSimilarity { self =>
 
   /** Given two featurizers, produces a featurizer that returns a single feature that contains their similarity. */
   def apply[A, B, C](f1: Featurizer[A, C], f2: Featurizer[B, C]): Featurizer[(A, B), Unit] = {
-    new Featurizer[(A, B), Unit] {
-      def name = s"$similarityName(${f1.name},${f2.name})"
-      def apply(pair: (A, B)) = {
-        val (a, b) = pair
-        val fa = f1(a)
-        val fb = f2(b)
-        FeatureGroup.fast(name)(Iterable(() → self.apply(fa, fb)))
-      }
+    Featurizer.singleNumerical(s"$similarityName(${f1.name},${f2.name})") { (pair: (A, B)) =>
+      val (a, b) = pair
+      val fa = f1(a)
+      val fb = f2(b)
+      self.apply(fa, fb)
     }
   }
+
+  def apply[A, B](f: Featurizer[A, B]): Featurizer[(A, A), Unit] = apply(f, f)
 }
 
 
