@@ -88,10 +88,26 @@ trait FeatureGroup[A] { self =>
     pairs filter { _._2 >= threshold } map { _._1 }
   }
 
+  def l1Norm: Double = {
+    var sum = 0.0
+    for ((k, v) ← pairs) sum += math.abs(v)
+    sum
+  }
+
   def l2Norm: Double = {
     var sum = 0.0
     for ((k, v) ← pairs) sum += v * v
     math.sqrt(sum)
+  }
+
+  def l2Normalize = {
+    val l2 = l2Norm
+    this mapValues { _ / l2 }
+  }
+
+  def l1Normalize = {
+    val l1 = l1Norm
+    this mapValues { _ / l1 }
   }
 
   override def toString = {

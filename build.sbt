@@ -2,17 +2,15 @@ name := "probe"
 
 organization := "me.tongfei"
 
-version := "0.5.2-SNAPSHOT"
+version := "0.5.3-SNAPSHOT"
 
-scalaVersion := "2.11.7"
+crossScalaVersions := Seq("2.11.7", "2.10.4")
 
 isSnapshot := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies += "de.bwaldvogel" % "liblinear" % "1.95"
-
-// libraryDependencies += "me.tongfei" %% "poly-algebra" % "0.2.10-SNAPSHOT" changing()
 
 scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline")
 

@@ -40,6 +40,14 @@ trait Featurizer[-A, B] extends (A => FeatureGroup[B]) { self =>
     self(a).uniformValue
   }
 
+  def l2Normalize = Featurizer(name) { (a: A) =>
+    self(a).l2Normalize
+  }
+
+  def l1Normalize = Featurizer(name) { (a: A) =>
+    self(a).l1Normalize
+  }
+
   def binarize(threshold: Double) = Featurizer(name) { (a: A) =>
     self(a).binarize(threshold)
   }
