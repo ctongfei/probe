@@ -40,7 +40,7 @@ trait FeatureGroup[A] { self =>
   def flatMap[B](f: Featurizer[A, B]) = FeatureGroup(name + "-" + f.name) {
     for {
       (ka, va) ← self.pairs
-      (kb, vb) ← f(ka).pairs
+      (kb, vb) ← f.extract(ka).pairs
     } yield kb → (va * vb)
   }
 

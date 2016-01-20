@@ -7,7 +7,12 @@ import scala.language.implicitConversions
   */
 package object probe {
 
+  implicit val pureContext: Unit = ()
+
   implicit def featurizerToFeatureExtractor[A, B](f: Featurizer[A, B]): FeatureExtractor[A, B]
-    = TrivialFeatureExtractor(f)
+    = FeatureExtractor.Trivial(f)
+
+  implicit def contextualizedFeaturizerToFeatureExtractor[A, B, C](f: ContextualizedFeaturizer[A, B, C]): ContextualizedFeatureExtractor[A, B, C]
+     = ContextualizedFeatureExtractor.Trivial(f)
 
 }

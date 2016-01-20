@@ -1,5 +1,6 @@
 package me.tongfei.probe
 
+import scala.collection.JavaConversions._
 /**
  * @author Tongfei Chen (ctongfei@gmail.com).
  */
@@ -15,8 +16,8 @@ object Test2 extends App {
 
   val top3_words = WordFeaturizer.topK(3)
 
-  val s1 = "John killed Mary who killed James who killed Hillary".split(" ")
-  val s2 = "John saved Mary who saved Lily who saved Henry".split(" ")
+  val s1 = "John killed Mary who killed James who killed Hillary".split(" ").toSeq
+  val s2 = "John saved Mary who saved Lily who saved Henry".split(" ").toSeq
 
   val t = top6_3grams(s1)
 
@@ -26,7 +27,7 @@ object Test2 extends App {
   val singleFeature = SingleNumericalFeature("a")(2)
 
   val ff = CosineSimilarity(top3_words, top3_words)
-  val ff12 = ff(s1, s2)
+  val ff12 = ff((s1, s2))
   val fvs1 = FeatureVector.from(fx(s1))
   val fvs2 = FeatureVector.from(fx(s2))
 

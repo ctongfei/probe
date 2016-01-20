@@ -5,13 +5,13 @@ package me.tongfei.probe
  */
 trait Feature[+A] {
 
-  def name: String
-  def key: A
+  def template: String
+  def feature: A
 
-  override def toString = s"$name~$key"
+  override def toString = s"$template~$feature"
 
   override def equals(that: Any) = that match {
-    case that: Feature[A] => this.name == that.name && this.key == that.key
+    case that: Feature[A] => this.template == that.template && this.feature == that.feature
     case _ => false
   }
 
@@ -20,21 +20,21 @@ trait Feature[+A] {
 
 object Feature {
   def apply[A](g: String, v: A): Feature[A] = new Feature[A] {
-    def name = g
-    def key = v
+    def template = g
+    def feature = v
   }
 
-  def unapply[A](f: Feature[A]): Option[(String, A)] = Some((f.name, f.key))
+  def unapply[A](f: Feature[A]): Option[(String, A)] = Some((f.template, f.feature))
 }
 
-case class SimpleFeature[+A](name: String, key: A) extends Feature[A]
+case class SimpleFeature[+A](template: String, feature: A) extends Feature[A]
 
 case class ProductFeature[+A, +B](f1: Feature[A], f2: Feature[B]) extends Feature[(A, B)] {
-  def name = s"(${f1.name},${f2.name})"
-  def key = (f1.key, f2.key)
+  def template = s"(${f1.template},${f2.template})"
+  def feature = (f1.feature, f2.feature)
 }
 
 case class CompositeFeature(func: String, name1: String, name2: String) extends Feature[Unit] {
-  def name: String = s"$func($name1,$name2)"
-  def key: Unit = ()
+  def template: String = s"$func($name1,$name2)"
+  def feature: Unit = ()
 }

@@ -11,11 +11,11 @@ class StringFeatureVector extends DefaultMap[String, Double] {
 
   private val data = mutable.HashMap[String, Double]()
 
-  def apply[A](f: Feature[A]): Double = data.getOrElse(f.name, 0.0)
+  def apply[A](f: Feature[A]): Double = data.getOrElse(f.template, 0.0)
 
   override def apply(f: String): Double = data.getOrElse(f, 0.0)
 
-  def update[A](f: Feature[A], x: Double) = data(f.name) = apply(f) + x
+  def update[A](f: Feature[A], x: Double) = data(f.template) = apply(f) + x
 
   def update(f: String, x: Double) = data(f) = apply(f) + x
 

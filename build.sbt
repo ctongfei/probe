@@ -2,9 +2,9 @@ name := "probe"
 
 organization := "me.tongfei"
 
-version := "0.5.3-SNAPSHOT"
+version := "0.6.0-SNAPSHOT"
 
-crossScalaVersions := Seq("2.11.7", "2.10.4")
+scalaVersion := "2.11.7"
 
 isSnapshot := true
 

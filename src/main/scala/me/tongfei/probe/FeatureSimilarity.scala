@@ -18,8 +18,8 @@ trait FeatureSimilarity { self =>
   def apply[A, B, C](f1: Featurizer[A, C], f2: Featurizer[B, C]): Featurizer[(A, B), Unit] = {
     Featurizer.singleNumerical(s"$similarityName(${f1.name},${f2.name})") { (pair: (A, B)) =>
       val (a, b) = pair
-      val fa = f1(a)
-      val fb = f2(b)
+      val fa = f1.extract(a)
+      val fb = f2.extract(b)
       self.apply(fa, fb)
     }
   }
