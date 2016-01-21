@@ -16,7 +16,7 @@ trait ContextualizedFeaturizer[-X, Y, C] { self =>
 
   def apply(x: X)(implicit c: C) = extract(x, c)
 
-  def attachContext(implicit c: C) = Featurizer(name) { x: X => extract(x, c) }
+  def attachContext(implicit c: C) = Featurizer.create(name) { x: X => extract(x, c) }
 
   def appendName(n: String) = create(s"$name-$n") { (x: X, c: C) =>
     extract(x, c).appendName(n)
@@ -73,5 +73,23 @@ object ContextualizedFeaturizer {
       def name = n
       def extract(a: X, ctx: C) = f(a, ctx)
     }
+
+  def count[X, Y, C](name: String)(f: (X, C) => Iterable[Y]) =
+    create(name)((x: X, c: C) => FeatureGroup.count(name)(f(x, c)))
+
+  def binary[X, Y, C](name: String)(f: (X, C) => Iterable[Y]) =
+    create(name)((x: X, c: C) => BinaryFeatureGroup(name)(f(x, c)))
+
+  def realValued[X, Y, C](name: String)(f: (X, C) => Iterable[(Y, Double)]) =
+    create(name)((x: X, c: C) => FeatureGroup(name)(f(x, c)))
+
+  def singleCategorical[X, Y, C](name: String)(f: (X, C) => Y) =
+    create(name)((x: X, c: C) => SingleCategoricalFeature(name)(f(x, c)))
+
+  def singleNumerical[X, C](name: String)(f: (X, C) => Double) =
+    create(name)((x: X, c: C) => SingleNumericalFeature(name)(f(x, c)))
+
+  def realVector[X, C](name: String)(f: (X, C) => Array[Double]) =
+    create(name)((x: X, c: C) => DenseVectorFeature(name)(f(x, c)))
 
 }

@@ -16,7 +16,7 @@ sealed trait ContextualizedFeatureExtractor[-X, Y, C] { self =>
 
   /**
     * Applies this feature vector on an element.
-    * @return A list of feature groups extracted out of this feature extractor.
+    * @return A list of feature groups extracted out of this input object.
     */
   def apply(a: X)(implicit c: C): Iterable[FeatureGroup[Y]]
 
