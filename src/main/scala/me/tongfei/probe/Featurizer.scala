@@ -6,25 +6,25 @@ import scala.language.implicitConversions
   * Represents a feature extractor that extracts a sequence of features with the same group name.
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
-trait Featurizer[-X, Y] { self =>
+trait Featurizer[-X, Y] extends ContextualizedFeaturizer[X, Y, Any] { self =>
 
   import Featurizer._
+
+  def extract(x: X, c: Any) = extract(x)
 
   def name: String
 
   def extract(a: X): FeatureGroup[Y]
 
-  def apply(a: X) = extract(a)
-
-  def appendName(n: String) = create(s"$name-$n") { (a: X) =>
+  override def appendName(n: String) = create(s"$name-$n") { (a: X) =>
     extract(a).appendName(n)
   }
 
-  def changeName(n: String) = create(n) { (a: X) =>
+  override def changeName(n: String) = create(n) { (a: X) =>
     extract(a).changeName(n)
   }
 
-  def map[Z](f: Y => Z) = create(name) { (a: X) =>
+  override def map[Z](f: Y => Z) = create(name) { (a: X) =>
     extract(a).map(f)
   }
 
@@ -32,31 +32,31 @@ trait Featurizer[-X, Y] { self =>
     extract(a).flatMap(f)
   }
 
-  def filter(f: Y => Boolean) = create(name) { (a: X) =>
+  override def filter(f: Y => Boolean) = create(name) { (a: X) =>
     extract(a).filter(f)
   }
 
-  def topK(k: Int): Featurizer[X, Y] = create(name) { (a: X) =>
+  override def topK(k: Int): Featurizer[X, Y] = create(name) { (a: X) =>
     extract(a).topK(k)
   }
 
-  def assignWeights(f: Y => Double) = create(name) { (a: X) =>
+  override def assignWeights(f: Y => Double) = create(name) { (a: X) =>
     extract(a).assignValues(f)
   }
 
-  def uniformWeight = create(name) { (a: X) =>
+  override def uniformWeight = create(name) { (a: X) =>
     extract(a).uniformValue
   }
 
-  def l2Normalize = create(name) { (a: X) =>
+  override def l2Normalize = create(name) { (a: X) =>
     extract(a).l2Normalize
   }
 
-  def l1Normalize = create(name) { (a: X) =>
+  override def l1Normalize = create(name) { (a: X) =>
     extract(a).l1Normalize
   }
 
-  def binarize(threshold: Double) = create(name) { (a: X) =>
+  override def binarize(threshold: Double) = create(name) { (a: X) =>
     extract(a).binarize(threshold)
   }
 

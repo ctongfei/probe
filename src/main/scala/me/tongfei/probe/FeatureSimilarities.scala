@@ -17,7 +17,7 @@ object EqualMatch extends FeatureSimilarity {
 }
 
 object CosineSimilarity extends FeatureSimilarity {
-  def similarityName = "cosSim"
+  def similarityName = "cos"
   def apply[C](fa: FeatureGroup[C], fb: FeatureGroup[C]) = {
     var ip = 0.0
     for ((_, (va, vb)) ← zipKey(fa, fb))

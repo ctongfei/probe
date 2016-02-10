@@ -28,12 +28,12 @@ object Test4 extends App {
 
   val s = "John killed Mary"
   val f = fWords >>> (fShift ++ fCapitalWords) >>> (f1gram ++ f2gram)
-  val fs = f(s)
+  val fs = f.extract(s)
   val fv = FeatureVector.from(fs)
 
   val t = "s s s s s s s s s a a a a a b b b c c c d e"
   val ft = fWords.discretize(Array(1.0, 2, 4, 8))
-  val ftv = ft(t)
+  val ftv = ft.extract(t)
 
   val bp = 0
 }

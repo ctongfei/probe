@@ -5,13 +5,17 @@ package me.tongfei.probe
  * @author Tongfei Chen
  * @since 0.5.0
  */
-sealed trait FeatureExtractor[-X, Y] { self =>
+sealed trait FeatureExtractor[-X, Y] extends ContextualizedFeatureExtractor[X, Y, Any] { self =>
 
   import FeatureExtractor._
 
-  def applyOnGroup[X1 <: X](gx: FeatureGroup[X1]): Iterable[FeatureGroup[Y]]
+  def extractOnGroup[X1 <: X](gx: FeatureGroup[X1]): Iterable[FeatureGroup[Y]]
 
-  def apply(x: X): Iterable[FeatureGroup[Y]]
+  def extract(x: X): Iterable[FeatureGroup[Y]]
+
+  def extractOnGroup[X1 <: X](ga: FeatureGroup[X1], c: Any) = extractOnGroup(ga)
+
+  def extract(a: X, c: Any) = extract(a)
 
   def >>>[Z](that: FeatureExtractor[Y, Z]): FeatureExtractor[X, Z]
     = new Composed(self, that)
@@ -25,18 +29,18 @@ sealed trait FeatureExtractor[-X, Y] { self =>
 object FeatureExtractor {
 
   case class Trivial[-X, Y](featurizer: Featurizer[X, Y]) extends FeatureExtractor[X, Y] {
-    def applyOnGroup[X1 <: X](gx: FeatureGroup[X1]) = Iterable(gx flatMap featurizer)
-    def apply(x: X) = Iterable(featurizer(x))
+    def extractOnGroup[X1 <: X](gx: FeatureGroup[X1]) = Iterable(gx flatMap featurizer)
+    def extract(x: X) = Iterable(featurizer(x))
   }
 
   case class Concatenated[-X, Y](featurizers: Iterable[FeatureExtractor[X, Y]]) extends FeatureExtractor[X, Y] {
-    def applyOnGroup[X1 <: X](gx: FeatureGroup[X1]) = for {
+    def extractOnGroup[X1 <: X](gx: FeatureGroup[X1]) = for {
       f ← featurizers
-      fgx ← f.applyOnGroup(gx)
+      fgx ← f.extractOnGroup(gx)
     } yield fgx
-    def apply(x: X) = for {
+    def extract(x: X) = for {
       f ← featurizers
-      fgx ← f(x)
+      fgx ← f.extract(x)
     } yield fgx
     override def ++[X1 <: X](f: FeatureExtractor[X1, Y]) = f match {
       case Concatenated(g) => Concatenated(featurizers ++ g)
@@ -45,18 +49,18 @@ object FeatureExtractor {
   }
 
   case class Composed[-X, Y, Z](f1: FeatureExtractor[X, Y], f2: FeatureExtractor[Y, Z]) extends FeatureExtractor[X, Z] {
-    def applyOnGroup[X1 <: X](gx: FeatureGroup[X1]) = {
-      val f1x = f1.applyOnGroup(gx)
+    def extractOnGroup[X1 <: X](gx: FeatureGroup[X1]) = {
+      val f1x = f1.extractOnGroup(gx)
       for {
         fg1 ← f1x
-        fg2 ← f2.applyOnGroup(fg1)
+        fg2 ← f2.extractOnGroup(fg1)
       } yield fg2
     }
-    def apply(x: X) = {
-      val f1x = f1(x)
+    def extract(x: X) = {
+      val f1x = f1.extract(x)
       for {
         fg1 ← f1x
-        fg2 ← f2.applyOnGroup(fg1)
+        fg2 ← f2.extractOnGroup(fg1)
       } yield fg2
     }
   }

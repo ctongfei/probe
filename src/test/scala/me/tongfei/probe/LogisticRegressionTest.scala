@@ -1,11 +1,15 @@
 package me.tongfei.probe
 
+import breeze.numerics._
 import me.tongfei.probe.classifier._
+import breeze.linalg._
+
+import scala.collection._
 
 /**
-  * @author Tongfei Chen (ctongfei@gmail.com).
-  */
-object LogLinearModelTest extends App {
+ * @author Tongfei Chen
+ */
+object LogisticRegressionTest extends App {
 
   val bow = Featurizer.count("word") { (s: String) => s.split(' ') }
 
@@ -22,13 +26,18 @@ object LogLinearModelTest extends App {
     FeatureVector(fx("c c c z d d d d d d d c c d")) → 1
   )
 
-  val llm = LogLinearModel.fitWithL1Regularization(100)(xs)
+  val alphabet = new Alphabet()
+  val mapped = xs.map(_._1).map(x => AlphabetizedFeatureVector(alphabet)(x.groups.toSeq: _*))
 
-  xs foreach { t => println(llm(t._1)) }
+  val lr = LogisticRegression.fit(mapped.map(_.toBreeze), xs.map(_._2), Regularizer.L2(5))
 
-  llm.parameters foreach println
-
-  val s = llm.score(xs(1)._1)
+  val params = new DefaultMap[String, Double] {
+    def get(key: String) = {
+      val v = lr.θ(alphabet(key))
+      if (abs(v) < 1e-6) Some(0) else Some(v)
+    }
+    def iterator = alphabet.m1.iterator.map { case (key, _) => key -> get(key).get }
+  }
 
   val bp = 0
 

@@ -1,16 +1,16 @@
 name := "probe"
-
 organization := "me.tongfei"
-
 version := "0.6.0-SNAPSHOT"
-
 scalaVersion := "2.11.7"
-
 isSnapshot := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+libraryDependencies += "org.scalanlp" %% "breeze" % "0.12"
+libraryDependencies += "org.scalanlp" %% "breeze-natives" % "0.12"
 libraryDependencies += "de.bwaldvogel" % "liblinear" % "1.95"
+libraryDependencies += "org.slf4j" % "slf4j-jdk14" % "1.7.14"
+
 
 scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline")
 

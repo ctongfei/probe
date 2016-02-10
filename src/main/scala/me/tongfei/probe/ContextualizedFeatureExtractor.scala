@@ -5,76 +5,76 @@ package me.tongfei.probe
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.6.0
   */
-sealed trait ContextualizedFeatureExtractor[-X, Y, C] { self =>
+trait ContextualizedFeatureExtractor[-X, Y, -C] { self =>
 
   import ContextualizedFeatureExtractor._
-
   /**
     * Applies this feature extractor on every key in a feature group.
     */
-  def applyOnGroup[X1 <: X](ga: FeatureGroup[X1])(implicit c: C): Iterable[FeatureGroup[Y]]
+  def extractOnGroup[X1 <: X](ga: FeatureGroup[X1], c: C): Iterable[FeatureGroup[Y]]
 
   /**
     * Applies this feature vector on an element.
     * @return A list of feature groups extracted out of this input object.
     */
-  def apply(a: X)(implicit c: C): Iterable[FeatureGroup[Y]]
+  def extract(a: X, c: C): Iterable[FeatureGroup[Y]]
 
   /**
     * Composes two feature extractors by first piping an object through the first extractor and then the second.
     * @return A composed feature extractor.
     */
-  def >>>[Z, C1 >: C](that: ContextualizedFeatureExtractor[Y, Z, C1]): ContextualizedFeatureExtractor[X, Z, C]
+  def >>>[Z, C1 <: C](that: ContextualizedFeatureExtractor[Y, Z, C1]): ContextualizedFeatureExtractor[X, Z, C1]
     = new Composed(self, that)
 
   /**
     * Concatenates two feature extractors.
     * @return A concatenated feature extractor.
     */
-  def ++[X1 <: X](that: ContextualizedFeatureExtractor[X1, Y, C]): ContextualizedFeatureExtractor[X1, Y, C]
+  def ++[X1 <: X, C1 <: C](that: ContextualizedFeatureExtractor[X1, Y, C1]): ContextualizedFeatureExtractor[X1, Y, C1]
     = new Concatenated(Iterable(self, that))
+
 
 }
 
 object ContextualizedFeatureExtractor {
 
-  case class Trivial[-X, Y, C](featurizer: ContextualizedFeaturizer[X, Y, C]) extends ContextualizedFeatureExtractor[X, Y, C] {
-    def applyOnGroup[A1 <: X](ga: FeatureGroup[A1])(implicit c: C) = Iterable(ga flatMap featurizer.attachContext(c))
-    def apply(a: X)(implicit c: C) = Iterable(featurizer(a)(c))
+  case class Trivial[-X, Y, -C](featurizer: ContextualizedFeaturizer[X, Y, C]) extends ContextualizedFeatureExtractor[X, Y, C] {
+    def extractOnGroup[A1 <: X](ga: FeatureGroup[A1], c: C) = Iterable(ga flatMap featurizer.attachContext(c))
+    def extract(a: X, c: C) = Iterable(featurizer(a)(c))
   }
 
-  case class Concatenated[-X, Y, C](featurizers: Iterable[ContextualizedFeatureExtractor[X, Y, C]]) extends ContextualizedFeatureExtractor[X, Y, C] {
-    def apply(a: X)(implicit c: C) = for {
+  case class Concatenated[-X, Y, -C](featurizers: Iterable[ContextualizedFeatureExtractor[X, Y, C]]) extends ContextualizedFeatureExtractor[X, Y, C] {
+    def extract(a: X, c: C) = for {
       f ← featurizers
-      fga ← f(a)
+      fga ← f.extract(a, c)
     } yield fga
 
-    def applyOnGroup[X1 <: X](ga: FeatureGroup[X1])(implicit c: C) = for {
+    def extractOnGroup[X1 <: X](ga: FeatureGroup[X1], c: C) = for {
       f ← featurizers
-      fga ← f.applyOnGroup(ga)
+      fga ← f.extractOnGroup(ga, c)
     } yield fga
 
-    override def ++[X1 <: X](f: ContextualizedFeatureExtractor[X1, Y, C]) = f match {
+    override def ++[X1 <: X, C1 <: C](f: ContextualizedFeatureExtractor[X1, Y, C1]) = f match {
       case Concatenated(g) => Concatenated(featurizers ++ g)
       case _ => Concatenated(featurizers ++ Iterable(f))
     }
   }
 
-  case class Composed[-X, Y, Z, C, C1 >: C](f1: ContextualizedFeatureExtractor[X, Y, C], f2: ContextualizedFeatureExtractor[Y, Z, C1]) extends ContextualizedFeatureExtractor[X, Z, C] {
+  case class Composed[-X, Y, Z, -C](f1: ContextualizedFeatureExtractor[X, Y, C], f2: ContextualizedFeatureExtractor[Y, Z, C]) extends ContextualizedFeatureExtractor[X, Z, C] {
 
-    def applyOnGroup[X1 <: X](ga: FeatureGroup[X1])(implicit c: C): Iterable[FeatureGroup[Z]] = {
-      val f1a = f1.applyOnGroup(ga)
+    def extractOnGroup[X1 <: X](ga: FeatureGroup[X1], c: C): Iterable[FeatureGroup[Z]] = {
+      val f1a = f1.extractOnGroup(ga, c)
       for {
         fg1 ← f1a
-        fg2 ← f2.applyOnGroup(fg1)
+        fg2 ← f2.extractOnGroup(fg1, c)
       } yield fg2
     }
 
-    def apply(a: X)(implicit c: C) = {
-      val f1a = f1(a)
+    def extract(a: X, c: C) = {
+      val f1a = f1.extract(a, c)
       for {
         fg1 ← f1a
-        fg2 ← f2.applyOnGroup(fg1)
+        fg2 ← f2.extractOnGroup(fg1, c)
       } yield fg2
     }
   }

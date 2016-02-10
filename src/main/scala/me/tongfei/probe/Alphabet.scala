@@ -14,8 +14,8 @@ class Alphabet {
 
   private var frozen = false
 
-  private val m1 = mutable.HashMap[String, Int]("<OOV>" → 0)
-  private val m2 = mutable.HashMap[Int, String](0 → "<OOV>")
+  val m1 = mutable.HashMap[String, Int]("<OOV>" → 0)
+  val m2 = mutable.HashMap[Int, String](0 → "<OOV>")
 
   def apply(w: String): Int = {
     if (m1 contains w) m1(w)

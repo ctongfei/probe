@@ -26,10 +26,12 @@ object Test2 extends App {
 
   val singleFeature = SingleNumericalFeature("a")(2)
 
+  implicit val context: Any = ()
+
   val ff = CosineSimilarity(top3_words, top3_words)
   val ff12 = ff((s1, s2))
-  val fvs1 = FeatureVector.from(fx(s1))
-  val fvs2 = FeatureVector.from(fx(s2))
+  val fvs1 = FeatureVector.from(fx.extract(s1))
+  val fvs2 = FeatureVector.from(fx.extract(s2))
 
   val s = fvs1.toString
   val fvs1restored = FeatureVector.parse(s)

@@ -17,6 +17,16 @@ object Test5 extends App {
     x.sliding(3).toSeq
   }
 
-  println((fxA >>> fxB)(1))
+  val fx = (fxA >>> fxB).map(_.toLowerCase)
+
+
+  println(fx(1))
+
+
+
+  val fxC = ContextualizedFeaturizer.count("a") { (x: Int, c: String) => Iterable(x)}
+  val fxD = Featurizer.count("b") {x: Int => Iterable(x)}
+
+  val fxCD = fxC ++ fxD
 
 }
