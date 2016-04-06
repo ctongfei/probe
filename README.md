@@ -17,14 +17,6 @@ val fx =
   )
 ```
 
-##### Installation
-
-```scala
-resolvers += Resolver.sonatypeRepo("snapshots")
-
-libraryDependencies += "me.tongfei" %% "probe" % "0.5.0-SNAPSHOT"
-```
-
 #### Feature and feature groups
 First, what is a `Feature`? How is it defined in `Probe`?
 

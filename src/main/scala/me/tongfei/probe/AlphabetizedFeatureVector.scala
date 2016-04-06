@@ -1,7 +1,5 @@
 package me.tongfei.probe
 
-import breeze.linalg._
-
 /**
  * @author Tongfei Chen (ctongfei@gmail.com).
  * @since 0.1.0
@@ -107,8 +105,6 @@ class AlphabetizedFeatureVector(val alphabet: Alphabet) {
 
   /** Returns the alphabetized (internal) sparse vector. */
   def internal = data
-
-  def toBreeze: Vector[Double] = SparseVector(alphabet.size)(pairs.toSeq: _*)
 
 }
 

@@ -1,18 +1,14 @@
 name := "probe"
 organization := "me.tongfei"
-version := "0.6.0-SNAPSHOT"
+version := "0.6.1-SNAPSHOT"
 scalaVersion := "2.11.7"
 isSnapshot := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies += "org.scalanlp" %% "breeze" % "0.12"
-libraryDependencies += "org.scalanlp" %% "breeze-natives" % "0.12"
 libraryDependencies += "de.bwaldvogel" % "liblinear" % "1.95"
-libraryDependencies += "org.slf4j" % "slf4j-jdk14" % "1.7.14"
 
-
-scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline")
+scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline", "-deprecation", "-Yinline-warnings")
 
 autoAPIMappings := true
 
@@ -29,25 +25,3 @@ publishTo := {
 }
 
 publishArtifact in Test := false
-
-pomExtra :=
-  <url>http://github.com/ctongfei/probe</url>
-    <licenses>
-      <license>
-        <name>MIT</name>
-        <url>http://opensource.org/licenses/MIT</url>
-        <distribution>repo</distribution>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:ctongfei/probe.git</url>
-      <connection>scm:git:git@github.com:ctongfei/probe.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>ctongfei</id>
-        <name>Tongfei Chen</name>
-        <url>http://tongfei.me/</url>
-      </developer>
-    </developers>
-

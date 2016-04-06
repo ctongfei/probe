@@ -11,7 +11,6 @@ trait FeatureSimilarity { self =>
   def similarityName: String
 
   /** Given two feature groups, computes their similarity measure. */
-  //TODO: should C be modeled as an existential type?
   def apply[C](fa: FeatureGroup[C], fb: FeatureGroup[C]): Double
 
   /** Given two featurizers, produces a featurizer that returns a single feature that contains their similarity. */
@@ -25,6 +24,18 @@ trait FeatureSimilarity { self =>
   }
 
   def apply[A, B](f: Featurizer[A, B]): Featurizer[(A, A), Unit] = apply(f, f)
+
+  def apply[A1, A2, B, C1, C2](f1: ContextualizedFeaturizer[A1, B, C1], f2: ContextualizedFeaturizer[A2, B, C2]): ContextualizedFeaturizer[(A1, A2), Unit, (C1, C2)] = {
+    ContextualizedFeaturizer.singleNumerical(s"$similarityName(${f1.name},${f2.name})") { (pair: (A1, A2), c: (C1, C2)) =>
+      val (a, b) = pair
+      val (ca, cb) = c
+      val fa = f1.extract(a, ca)
+      val fb = f2.extract(b, cb)
+      self.apply(fa, fb)
+    }
+  }
+
+  def apply[A, B, C](f: ContextualizedFeaturizer[A, B, C]): ContextualizedFeaturizer[(A, A), Unit, (C, C)] = apply(f, f)
 }
 
 
