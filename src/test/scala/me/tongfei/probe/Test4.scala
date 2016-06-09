@@ -28,6 +28,8 @@ object Test4 extends App {
 
   val s = "John killed Mary"
   val f = fWords >>> (fShift ++ fCapitalWords) >>> (f1gram ++ f2gram)
+
+
   val fs = f.extract(s)
   val fv = FeatureVector.from(fs)
 

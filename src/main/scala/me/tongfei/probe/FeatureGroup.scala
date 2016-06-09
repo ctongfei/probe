@@ -5,12 +5,13 @@ import me.tongfei.probe.util._
 /**
   * Represents a group of features (having the same group name)
   * that has real-valued weights.
+ *
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.0
   */
 trait FeatureGroup[A] { self =>
 
-  /** The name that designates the group of this feature set. */
+  /** The name that designates the group/template of this feature set. */
   def name: String
 
   /** The key-value pair of the features. */
@@ -19,21 +20,21 @@ trait FeatureGroup[A] { self =>
   def features = pairs map { case (k, v) => Feature(name, k) → v }
 
 
-  private def compact = FeatureGroup.fast(name) {
+  private def compact = FeatureGroup.unchecked(name) {
     pairs.groupBy(_._1) map { case (f, fs) => f → fs.map(_._2).sum }
   }
 
   // HELPER FUNCTIONS
 
-  def changeName(n: String) = FeatureGroup.fast(n)(pairs)
-  
-  def appendName(n: String) = FeatureGroup.fast(name + "-" + n)(pairs)
+  def changeName(n: String) = FeatureGroup.unchecked(n)(pairs)
+
+  def appendName(n: String) = FeatureGroup.unchecked(name + "-" + n)(pairs)
 
   def map[B](f: A => B) = FeatureGroup(name) {
     pairs map { case (k, v) => f(k) → v }
   }
 
-  def mapValues(f: Double => Double) = FeatureGroup.fast(name) {
+  def mapValues(f: Double => Double) = FeatureGroup.unchecked(name) {
     pairs map { case (k, v) => k → f(v) }
   }
 
@@ -44,11 +45,11 @@ trait FeatureGroup[A] { self =>
     } yield kb → (va * vb)
   }
 
-  def filter(f: A => Boolean) = FeatureGroup.fast(name) {
+  def filter(f: A => Boolean) = FeatureGroup.unchecked(name) {
     pairs filter { case (v, _) => f(v) }
   }
 
-  def topK(k: Int) = FeatureGroup.fast(name) {
+  def topK(k: Int) = FeatureGroup.unchecked(name) {
     pairs.toArray.sortBy(-_._2).take(k)
   }
 
@@ -65,10 +66,10 @@ trait FeatureGroup[A] { self =>
 
   def -(that: FeatureGroup[A]): FeatureGroup[A] = this + (-that)
 
-  def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.fast(s"($name,${that.name})") {
+  def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.unchecked(s"($name,${that.name})") {
     for {
-      (ka, va) ← self.pairs
-      (kb, vb) ← that.pairs
+      (ka, va) ← self.pairs.view
+      (kb, vb) ← that.pairs.view
     } yield (ka, kb) → (va * vb)
   }
 
@@ -80,7 +81,7 @@ trait FeatureGroup[A] { self =>
     pairs map { _._1 }
   }
 
-  def assignValues(f: A => Double): FeatureGroup[A] = FeatureGroup.fast(name) {
+  def assignValues(f: A => Double): FeatureGroup[A] = FeatureGroup.unchecked(name) {
     pairs map { case (k, v) => (k, f(k) * v) }
   }
 
@@ -112,7 +113,7 @@ trait FeatureGroup[A] { self =>
 
   override def toString = {
     pairs.map { case (k, v) =>
-      if (k != (())) s"$name~$k:${format(v)}" else s"$name:${format(v)}"
+      if (k != ()) s"$name~$k:${format(v)}" else s"$name:${format(v)}"
     }.mkString(" ")
   }
 }
@@ -120,7 +121,7 @@ trait FeatureGroup[A] { self =>
 object FeatureGroup {
 
   def count[A](g: String)(ks: Iterable[A]): FeatureGroup[A] =
-    fast(g)(ks.map(k => k → 1.0)).compact
+    unchecked(g)(ks.map(k => k → 1.0)).compact
 
   /**
     * Creates a real-valued feature group.
@@ -128,9 +129,9 @@ object FeatureGroup {
     * @param fvs sequence of (key, value) pairs
     * @tparam A type of key
     */
-  def apply[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] = fast(g)(fvs).compact
+  def apply[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] = unchecked(g)(fvs).compact
 
-  private[probe] def fast[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
+  private[probe] def unchecked[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
     new FeatureGroup[A] {
       def name = g
       def pairs = fvs

@@ -1,6 +1,6 @@
 name := "probe"
 organization := "me.tongfei"
-version := "0.6.1-SNAPSHOT"
+version := "0.7.0-SNAPSHOT"
 scalaVersion := "2.11.7"
 isSnapshot := true
 

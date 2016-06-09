@@ -9,8 +9,8 @@ import scala.collection._
  */
 class SparseVector extends mutable.HashMap[Int, Double] {
 
-  override def apply(i: Int) = getOrElse(i, 0.0)
-
+  // dictates how this sparse vector behave when an absent key is accessed
+  override def default(k: Int) = 0.0
 
   override def toString() = {
     this.toArray.sortBy(_._1).map{case (k, v) => s"$k:$v"}.mkString(" ")

@@ -27,7 +27,7 @@ class LogLinearModel[A] private(featureAlphabet: Alphabet, model: Model)
     }.toArray.sortBy(_.getIndex)
     val scores = Array.ofDim[Double](2)
     val _ = Linear.predictProbability(model, x, scores)
-    scores(0)
+    scores(0) // TODO: BUGFIX!!
   }
 
   /** Returns the list of non-zero parameters (feature weights) in descending order. */

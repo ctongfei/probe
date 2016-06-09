@@ -73,9 +73,7 @@ trait Featurizer[-X, Y] extends ContextualizedFeaturizer[X, Y, Any] { self =>
     self.extract(a) cartesianProduct that.extract(a)
   }
 
-  def <*>[X1, Y1](that: Featurizer[X1, Y1]): Featurizer[(X, X1), (Y, Y1)] = create(name + "," + that.name) { case (a, a1) =>
-    self.extract(a) cartesianProduct that.extract(a1)
-  }
+  def <*>[X1, Y1](that: Featurizer[X1, Y1]): Featurizer[(X, X1), (Y, Y1)] = new FeaturizerT.ProductFeaturizer(self, that)
 
   def ×[X1, Y1](that: Featurizer[X1, Y1]) = <*>(that)
 
@@ -99,5 +97,17 @@ object Featurizer {
   def singleNumerical[A](name: String)(f: A => Double) = create(name)((a: A) => SingleNumericalFeature(name)(f(a)))
 
   def realVector[A](name: String)(f: A => Array[Double]) = create(name)((a: A) => DenseVectorFeature(name)(f(a)))
+
+}
+
+private[tongfei] object FeaturizerT {
+
+  case class ProductFeaturizer[X1, Y1, X2, Y2](self: Featurizer[X1, Y1], that: Featurizer[X2, Y2]) extends Featurizer[(X1, X2), (Y1, Y2)] {
+    val name = self.name + "," + that.name
+    def extract(a: (X1, X2)) = {
+      val (x1, x2) = a
+      self.extract(x1) cartesianProduct that.extract(x2)
+    }
+  }
 
 }

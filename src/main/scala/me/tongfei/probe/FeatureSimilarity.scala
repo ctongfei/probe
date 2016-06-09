@@ -14,14 +14,8 @@ trait FeatureSimilarity { self =>
   def apply[C](fa: FeatureGroup[C], fb: FeatureGroup[C]): Double
 
   /** Given two featurizers, produces a featurizer that returns a single feature that contains their similarity. */
-  def apply[A, B, C](f1: Featurizer[A, C], f2: Featurizer[B, C]): Featurizer[(A, B), Unit] = {
-    Featurizer.singleNumerical(s"$similarityName(${f1.name},${f2.name})") { (pair: (A, B)) =>
-      val (a, b) = pair
-      val fa = f1.extract(a)
-      val fb = f2.extract(b)
-      self.apply(fa, fb)
-    }
-  }
+  def apply[A, B, C](f1: Featurizer[A, C], f2: Featurizer[B, C]): Featurizer[(A, B), Unit] =
+    new FeatureSimilarityT.SimilarityFeaturizer(self, f1, f2)
 
   def apply[A, B](f: Featurizer[A, B]): Featurizer[(A, A), Unit] = apply(f, f)
 
@@ -47,6 +41,20 @@ object FeatureSimilarity {
     for {
       (ka, va) ← fa.pairs if mb contains ka
     } yield ka → (va, mb(ka))
+  }
+
+}
+
+private[tongfei] object FeatureSimilarityT {
+
+  case class SimilarityFeaturizer[A, B, C](sim: FeatureSimilarity, f1: Featurizer[A, C], f2: Featurizer[B, C]) extends Featurizer[(A, B), Unit] {
+    val name = s"${sim.similarityName}(${f1.name},${f2.name})"
+    def extract(pair: (A, B)) = {
+      val (a, b) = pair
+      val fa = f1.extract(a)
+      val fb = f2.extract(b)
+      SingleNumericalFeature(name)(sim(fa, fb))
+    }
   }
 
 }
