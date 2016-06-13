@@ -5,7 +5,7 @@ package me.tongfei.probe
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.6.0
   */
-trait ContextualizedFeatureExtractor[-X, Y, -C] { self =>
+trait ContextualizedFeatureExtractor[-X, +Y, -C] { self =>
 
   import ContextualizedFeatureExtractor._
   /**
@@ -30,7 +30,7 @@ trait ContextualizedFeatureExtractor[-X, Y, -C] { self =>
     * Concatenates two feature extractors.
     * @return A concatenated feature extractor.
     */
-  def ++[X1 <: X, C1 <: C](that: ContextualizedFeatureExtractor[X1, Y, C1]): ContextualizedFeatureExtractor[X1, Y, C1]
+  def ++[X1 <: X, C1 <: C, Z >: Y](that: ContextualizedFeatureExtractor[X1, Z, C1]): ContextualizedFeatureExtractor[X1, Z, C1]
     = new Concatenated(Iterable(self, that))
 
 
@@ -54,7 +54,7 @@ object ContextualizedFeatureExtractor {
       fga ← f.extractOnGroup(ga, c)
     } yield fga
 
-    override def ++[X1 <: X, C1 <: C](f: ContextualizedFeatureExtractor[X1, Y, C1]) = f match {
+    override def ++[X1 <: X, C1 <: C, Z >: Y](f: ContextualizedFeatureExtractor[X1, Z, C1]) = f match {
       case Concatenated(g) => Concatenated(featurizers ++ g)
       case _ => Concatenated(featurizers ++ Iterable(f))
     }

@@ -1,7 +1,10 @@
 package me.tongfei.probe.classifier
 
+import java.io._
+
 import de.bwaldvogel.liblinear._
 import me.tongfei.probe._
+
 import scala.collection._
 
 /**
@@ -27,7 +30,7 @@ class LogLinearModel[A] private(featureAlphabet: Alphabet, model: Model)
     }.toArray.sortBy(_.getIndex)
     val scores = Array.ofDim[Double](2)
     val _ = Linear.predictProbability(model, x, scores)
-    scores(model.getLabels.indexOf(1)) // TODO: CHECK IF THIS IS RIGHT
+    scores(model.getLabels.indexOf(1))
   }
 
   /** Returns the list of non-zero parameters (feature weights) in descending order. */
@@ -37,6 +40,13 @@ class LogLinearModel[A] private(featureAlphabet: Alphabet, model: Model)
       .filter { i => w(i - 1) != 0.0 } // !!! Liblinear stores the weight for feature i in w(i - 1) !!!
       .map { i => featureAlphabet.get(i) → w(i - 1) }
       .sortBy(-_._2)
+  }
+
+  def saveToFile(fn: String) = {
+    val pw = new PrintWriter(fn)
+    for ((k, w) <- parameters)
+      pw.print(s"$k\t$w")
+    pw.close()
   }
 
 }

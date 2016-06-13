@@ -1,6 +1,7 @@
 package me.tongfei.probe
 
 import me.tongfei.probe.util._
+import scala.annotation.unchecked.{uncheckedVariance => uv}
 
 /**
   * Represents a group of features (having the same group name)
@@ -9,7 +10,7 @@ import me.tongfei.probe.util._
   * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.0
   */
-trait FeatureGroup[A] { self =>
+trait FeatureGroup[+A] { self =>
 
   /** The name that designates the group/template of this feature set. */
   def name: String
@@ -59,12 +60,12 @@ trait FeatureGroup[A] { self =>
 
   /* binary combinators */
 
-  def +(that: FeatureGroup[A]): FeatureGroup[A] = {
+  def +[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = {
     require(name == that.name)
     FeatureGroup(name)(this.pairs ++ that.pairs)
   }
 
-  def -(that: FeatureGroup[A]): FeatureGroup[A] = this + (-that)
+  def -[B >: A](that: FeatureGroup[B]): FeatureGroup[B] = this + (-that)
 
   def cartesianProduct[B](that: FeatureGroup[B]): FeatureGroup[(A, B)] = FeatureGroup.unchecked(s"($name,${that.name})") {
     for {
@@ -77,7 +78,7 @@ trait FeatureGroup[A] { self =>
 
   /* value manipulation */
 
-  def uniformValue: BinaryFeatureGroup[A] = BinaryFeatureGroup.fast(name) {
+  def uniformValue: BinaryFeatureGroup[A @uv] = BinaryFeatureGroup.fast(name) {
     pairs map { _._1 }
   }
 
@@ -85,7 +86,7 @@ trait FeatureGroup[A] { self =>
     pairs map { case (k, v) => (k, f(k) * v) }
   }
 
-  def binarize(threshold: Double) = BinaryFeatureGroup.fast(name) {
+  def binarize(threshold: Double): BinaryFeatureGroup[A @uv] = BinaryFeatureGroup.fast(name) {
     pairs filter { _._2 >= threshold } map { _._1 }
   }
 

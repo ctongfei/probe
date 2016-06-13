@@ -5,7 +5,7 @@ package me.tongfei.probe
  * @author Tongfei Chen
  * @since 0.5.0
  */
-sealed trait FeatureExtractor[-X, Y] extends ContextualizedFeatureExtractor[X, Y, Any] { self =>
+sealed trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any] { self =>
 
   import FeatureExtractor._
 
@@ -20,7 +20,7 @@ sealed trait FeatureExtractor[-X, Y] extends ContextualizedFeatureExtractor[X, Y
   def >>>[Z](that: FeatureExtractor[Y, Z]): FeatureExtractor[X, Z]
     = new Composed(self, that)
 
-  def ++[X1 <: X](that: FeatureExtractor[X1, Y]): FeatureExtractor[X1, Y]
+  def ++[X1 <: X, Z >: Y](that: FeatureExtractor[X1, Z]): FeatureExtractor[X1, Z]
      = new Concatenated(Iterable(self, that))
 
 }
@@ -28,12 +28,12 @@ sealed trait FeatureExtractor[-X, Y] extends ContextualizedFeatureExtractor[X, Y
 
 object FeatureExtractor {
 
-  case class Trivial[-X, Y](featurizer: Featurizer[X, Y]) extends FeatureExtractor[X, Y] {
+  case class Trivial[-X, +Y](featurizer: Featurizer[X, Y]) extends FeatureExtractor[X, Y] {
     def extractOnGroup[X1 <: X](gx: FeatureGroup[X1]) = Iterable(gx flatMap featurizer)
     def extract(x: X) = Iterable(featurizer(x))
   }
 
-  case class Concatenated[-X, Y](featurizers: Iterable[FeatureExtractor[X, Y]]) extends FeatureExtractor[X, Y] {
+  case class Concatenated[-X, +Y](featurizers: Iterable[FeatureExtractor[X, Y]]) extends FeatureExtractor[X, Y] {
     def extractOnGroup[X1 <: X](gx: FeatureGroup[X1]) = for {
       f ← featurizers
       fgx ← f.extractOnGroup(gx)
@@ -42,7 +42,7 @@ object FeatureExtractor {
       f ← featurizers
       fgx ← f.extract(x)
     } yield fgx
-    override def ++[X1 <: X](f: FeatureExtractor[X1, Y]) = f match {
+    override def ++[X1 <: X, Z >: Y](f: FeatureExtractor[X1, Z]) = f match {
       case Concatenated(g) => Concatenated(featurizers ++ g)
       case _ => Concatenated(featurizers ++ Iterable(f))
     }

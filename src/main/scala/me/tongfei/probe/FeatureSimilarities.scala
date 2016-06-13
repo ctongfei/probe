@@ -16,6 +16,16 @@ object EqualMatch extends FeatureSimilarity {
   }
 }
 
+object Dot extends FeatureSimilarity {
+  def similarityName = "dot"
+  def apply[C](fa: FeatureGroup[C], fb: FeatureGroup[C]) = {
+    var sum = 0.0
+    for ((_, (va, vb)) ← zipKey(fa, fb))
+      sum += va * vb
+    sum
+  }
+}
+
 object CosineSimilarity extends FeatureSimilarity {
   def similarityName = "cos"
   def apply[C](fa: FeatureGroup[C], fb: FeatureGroup[C]) = {
