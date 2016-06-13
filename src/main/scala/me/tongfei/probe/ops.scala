@@ -4,7 +4,7 @@ package me.tongfei.probe
  * @author Tongfei Chen
  * @since 0.6.0
  */
-trait Priority0Implicits extends Priority1Implicits with ProjectionOps {
+trait Priority0Implicits extends Priority1Implicits {
 
   implicit class PureFeaturizerOps[A, B](val f: Featurizer[A, B]) {
     def apply(x: A) = f.extract(x)

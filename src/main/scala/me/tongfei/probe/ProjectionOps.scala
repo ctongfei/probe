@@ -1,5 +1,5 @@
 package me.tongfei.probe
-
+/*
 /**
  * Feature extractor projections.
  * @author Tongfei Chen
@@ -27,13 +27,13 @@ trait ProjectionOps extends ContextualizedProjectionOps {
 
     def projectFirst: FeatureExtractor[A, _] = self match {
       case FeatureExtractor.Trivial(fz) => FeatureExtractor.Trivial(fz.projectFirst)
-      case FeatureExtractor.Concatenated(fzs) => FeatureExtractor.Concatenated(fzs map {_.projectFirst})
+      case FeatureExtractor.Concatenated(fzs: FeatureExtractor[(A, B), Any]) => FeatureExtractor.Concatenated(fzs map {_.projectFirst})
       case _ => throw new FeatureProjectionException
     }
 
     def projectSecond: FeatureExtractor[B, _] = self match {
       case FeatureExtractor.Trivial(fz) => FeatureExtractor.Trivial(fz.projectSecond)
-      case FeatureExtractor.Concatenated(fzs) => FeatureExtractor.Concatenated(fzs map {_.projectSecond})
+      case FeatureExtractor.Concatenated(fzs: FeatureExtractor[(A, B), Any]) => FeatureExtractor.Concatenated(fzs map {_.projectSecond})
       case _ => throw new FeatureProjectionException
     }
 
@@ -54,3 +54,4 @@ trait ContextualizedProjectionOps {
 }
 
 class FeatureProjectionException extends Exception("This feature extractor cannot be projected.")
+*/

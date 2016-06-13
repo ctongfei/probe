@@ -12,8 +12,8 @@ object LogLinearModelTest extends App {
   val fx = bow
 
   val xs = Seq(
-    FeatureVector(fx("a a a a a a a ")) → 1,
     FeatureVector(fx("b b b b b b b ")) → 0,
+    FeatureVector(fx("a a a a a a a ")) → 1,
     FeatureVector(fx("a a a a a d x a e a 3 q z 4")) → 1,
     FeatureVector(fx("b b 3 s 4 6 2 c d c c c c c")) → 0,
     FeatureVector(fx("c c c c a c a c c c c c c a")) → 0,
@@ -28,7 +28,7 @@ object LogLinearModelTest extends App {
 
   llm.parameters foreach println
 
-  val s = llm.score(xs(1)._1)
+  val s = llm.score(xs(0)._1)
 
   val bp = 0
 

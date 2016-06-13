@@ -27,11 +27,11 @@ class LogLinearModel[A] private(featureAlphabet: Alphabet, model: Model)
     }.toArray.sortBy(_.getIndex)
     val scores = Array.ofDim[Double](2)
     val _ = Linear.predictProbability(model, x, scores)
-    scores(0) // TODO: BUGFIX!!
+    scores(model.getLabels.indexOf(1)) // TODO: CHECK IF THIS IS RIGHT
   }
 
   /** Returns the list of non-zero parameters (feature weights) in descending order. */
-  def parameters: Iterable[(String, Double)] = {
+  def parameters = {
     val w = model.getFeatureWeights
     (1 until featureAlphabet.size)
       .filter { i => w(i - 1) != 0.0 } // !!! Liblinear stores the weight for feature i in w(i - 1) !!!
