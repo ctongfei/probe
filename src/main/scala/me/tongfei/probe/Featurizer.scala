@@ -6,7 +6,8 @@ import scala.language.implicitConversions
   * Represents a feature extractor that extracts a sequence of features with the same group name.
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
-trait Featurizer[-X, +Y] extends ContextualizedFeaturizer[X, Y, Any] { self =>
+trait Featurizer[-X, +Y] extends ContextualizedFeaturizer[X, Y, Any] {
+  self =>
 
   import Featurizer._
 
@@ -26,6 +27,10 @@ trait Featurizer[-X, +Y] extends ContextualizedFeaturizer[X, Y, Any] { self =>
 
   override def map[Z](f: Y => Z) = create(name) { (a: X) =>
     extract(a).map(f)
+  }
+
+  override def contramap[Z](f: Z => X) = create(name) {(a: Z) =>
+    extract(f(a))
   }
 
   def andThen[Z](f: Featurizer[Y, Z]) = create(name + "-" + f.name) { (a: X) =>

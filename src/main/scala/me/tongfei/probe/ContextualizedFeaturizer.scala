@@ -6,7 +6,8 @@ package me.tongfei.probe
  * @since 0.6.0
  * @tparam C Type of context
  */
-trait ContextualizedFeaturizer[-X, +Y, -C] { self =>
+trait ContextualizedFeaturizer[-X, +Y, -C] {
+  self =>
 
   import ContextualizedFeaturizer._
 
@@ -26,6 +27,10 @@ trait ContextualizedFeaturizer[-X, +Y, -C] { self =>
 
   def map[Z](f: Y => Z) = create(name) { (x: X, c: C) =>
     extract(x, c).map(f)
+  }
+
+  def contramap[Z](f: Z => X) = create(name) { (z: Z, c: C) =>
+    extract(f(z), c)
   }
 
   def andThen[Z, C1 <: C](f: ContextualizedFeaturizer[Y, Z, C1]) = create(name + "-" + f.name) { (x: X, c: C1) =>
