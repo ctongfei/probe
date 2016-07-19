@@ -33,6 +33,11 @@ trait ContextualizedFeatureExtractor[-X, +Y, -C] { self =>
   def ++[X1 <: X, C1 <: C, Z >: Y](that: ContextualizedFeatureExtractor[X1, Z, C1]): ContextualizedFeatureExtractor[X1, Z, C1]
     = new Concatenated(Iterable(self, that))
 
+  def contramap[W](f: W => X): ContextualizedFeatureExtractor[W, Y, C] = self match {
+    case Trivial(g)       => Trivial(g contramap f)
+    case Concatenated(gs) => Concatenated(gs map { _ contramap f })
+    case Composed(g, h)   => Composed(g contramap f, h)
+  }
 
 }
 

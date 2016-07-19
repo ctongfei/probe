@@ -5,17 +5,16 @@
     <artifactId>probe_2.11</artifactId>
     <packaging>jar</packaging>
     <description>probe</description>
-    <version>0.6.4-SNAPSHOT</version>
+    <version>0.6.5-SNAPSHOT</version>
     <name>probe</name>
     <organization>
         <name>me.tongfei</name>
     </organization>
 
-
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
-
+    
         <plugins>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -31,7 +30,7 @@
                 </executions>
             </plugin>
         </plugins>
-
+    
     </build>
 
     <dependencies>

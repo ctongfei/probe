@@ -23,6 +23,12 @@ sealed trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, 
   def ++[X1 <: X, Z >: Y](that: FeatureExtractor[X1, Z]): FeatureExtractor[X1, Z]
      = new Concatenated(Iterable(self, that))
 
+  override def contramap[W](f: W => X): FeatureExtractor[W, Y] = self match {
+    case Trivial(g)       => Trivial(g contramap f)
+    case Concatenated(gs) => Concatenated(gs map { _ contramap f })
+    case Composed(g, h)   => Composed(g contramap f, h)
+  }
+
 }
 
 
