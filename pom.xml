@@ -11,6 +11,12 @@
         <name>me.tongfei</name>
     </organization>
 
+    <parent>
+      <groupId>edu.jhu.hlt</groupId>
+      <artifactId>hltcoe-concrete-parent</artifactId>
+      <version>4.10-rework</version>
+    </parent>
+
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
