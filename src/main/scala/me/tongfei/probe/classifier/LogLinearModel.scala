@@ -1,11 +1,12 @@
 package me.tongfei.probe.classifier
 
-import java.io._
-
+import me.tongfei.probe.util._
 import de.bwaldvogel.liblinear._
 import me.tongfei.probe._
+import java.nio.file._
 
 import scala.collection._
+import scala.collection.JavaConversions._
 
 /**
   * A simple log-linear model based on the library `liblinear`.
@@ -43,9 +44,9 @@ class LogLinearModel[A] private(featureAlphabet: Alphabet, model: Model)
   }
 
   def saveToFile(fn: String) = {
-    val pw = new PrintWriter(fn)
+    val pw = new java.io.PrintWriter(fn)
     for ((k, w) <- parameters)
-      pw.print(s"$k\t$w")
+      pw.println(s"$k\t$w")
     pw.close()
   }
 
@@ -82,6 +83,21 @@ object LogLinearModel {
     val model = Linear.train(problem, parameter)
 
     new LogLinearModel(featureAlphabet, model)
+  }
+
+  def main(args: Array[String]) = {
+    val inputFeatureFile = args(0)
+    val outputModelFile = args(1)
+    val regCoeff = args(2)
+
+    val data = Files.readAllLines(Paths.get(inputFeatureFile)).map { line =>
+      val spPos = line.indexOf(' ')
+      val l = line.substring(0, spPos)
+      val fv = line.substring(spPos + 1)
+      FeatureVector.parse(fv) -> l.toInt
+    }
+    val model = fitWithL1Regularization(regCoeff.toDouble)(data)
+    model.saveToFile(outputModelFile)
   }
 
 }

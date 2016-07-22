@@ -5,7 +5,7 @@ package me.tongfei.probe
  * @author Tongfei Chen
  * @since 0.5.0
  */
-sealed trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any] { self =>
+trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any] { self =>
 
   import FeatureExtractor._
 
