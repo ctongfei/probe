@@ -1,7 +1,7 @@
 name := "probe"
 organization := "me.tongfei"
-version := "0.6.5-SNAPSHOT"
-scalaVersion := "2.11.7"
+version := "0.6.6-SNAPSHOT"
+scalaVersion := "2.11.8"
 isSnapshot := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
@@ -13,6 +13,7 @@ scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline", "-
 autoAPIMappings := true
 
 scalacOptions in (Compile, doc) += "-diagrams"
+
 
 publishMavenStyle := true
 

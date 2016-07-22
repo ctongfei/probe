@@ -108,7 +108,7 @@ object Featurizer {
 private[tongfei] object FeaturizerT {
 
   case class ProductFeaturizer[X1, Y1, X2, Y2](f1: Featurizer[X1, Y1], f2: Featurizer[X2, Y2]) extends Featurizer[(X1, X2), (Y1, Y2)] {
-    val name = f1.name + "," + f2.name
+    val name = "(" + f1.name + "," + f2.name + ")"
     def extract(a: (X1, X2)) = {
       val (x1, x2) = a
       f1.extract(x1) cartesianProduct f2.extract(x2)
