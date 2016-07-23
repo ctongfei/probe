@@ -17,6 +17,7 @@ trait FeatureSimilarity { self =>
   def apply[A, B, C](f1: Featurizer[A, C], f2: Featurizer[B, C]): Featurizer[(A, B), Unit] =
     new FeatureSimilarityT.SimilarityFeaturizer(self, f1, f2)
 
+
   def apply[A, B](f: Featurizer[A, B]): Featurizer[(A, A), Unit] = apply(f, f)
 
   def apply[A1, A2, B, C1, C2](f1: ContextualizedFeaturizer[A1, B, C1], f2: ContextualizedFeaturizer[A2, B, C2]): ContextualizedFeaturizer[(A1, A2), Unit, (C1, C2)] = {

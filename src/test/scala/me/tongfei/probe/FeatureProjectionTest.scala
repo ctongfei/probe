@@ -18,7 +18,7 @@ object FeatureProjectionTest extends App {
   val str = "abcdde"
   val int = 5
 
-  val fci1f = fci1(str)
+  val fci1f = FeatureVector.from(fci1(str))
 
   val bp = 0
 
