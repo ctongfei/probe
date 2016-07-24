@@ -29,6 +29,12 @@ trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any]
     case Composed(g, h)   => Composed(g contramap f, h)
   }
 
+  override def map[Z](f: Y => Z): FeatureExtractor[X, Z] = self match {
+    case Trivial(g)       => Trivial(g map f)
+    case Concatenated(gs) => Concatenated(gs map { _ map f})
+    case Composed(g, h)   => Composed(g, h map f)
+  }
+
 }
 
 

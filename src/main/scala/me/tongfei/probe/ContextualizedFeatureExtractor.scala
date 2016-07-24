@@ -39,6 +39,12 @@ trait ContextualizedFeatureExtractor[-X, +Y, -C] { self =>
     case Composed(g, h)   => Composed(g contramap f, h)
   }
 
+  def map[Z](f: Y => Z): ContextualizedFeatureExtractor[X, Z, C] = self match {
+    case Trivial(g)       => Trivial(g map f)
+    case Concatenated(gs) => Concatenated(gs map { _ map f })
+    case Composed(g, h)   => Composed(g, h map f)
+  }
+
 }
 
 object ContextualizedFeatureExtractor {
