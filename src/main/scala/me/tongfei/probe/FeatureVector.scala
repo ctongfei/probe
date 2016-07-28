@@ -109,6 +109,8 @@ object FeatureVector {
     fv
   }
 
+  def empty[A] = new FeatureVector[A]()
+
   /** Reads a LIBSVM style string representation of a feature vector.
     * @note The type of feature keys will be obliterated: they will be `String` in the returned vector.
     */

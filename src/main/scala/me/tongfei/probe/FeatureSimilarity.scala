@@ -33,8 +33,6 @@ trait FeatureSimilarity { self =>
   def apply[A, B, C](f: ContextualizedFeaturizer[A, B, C]): ContextualizedFeaturizer[(A, A), Unit, (C, C)] = apply(f, f)
 }
 
-
-
 object FeatureSimilarity {
 
   def zipKey[C](fa: FeatureGroup[C], fb: FeatureGroup[C]): Iterable[(C, (Double, Double))] = {
