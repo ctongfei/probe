@@ -6,62 +6,62 @@ import scala.language.implicitConversions
   * Represents a feature extractor that extracts a sequence of features with the same group name.
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
-trait Featurizer[-X, +Y] extends ContextualizedFeaturizer[X, Y, Any] {
+trait Featurizer[-A, +B] extends ContextualizedFeaturizer[A, B, Any] {
   self =>
 
   import Featurizer._
 
-  def extract(x: X, c: Any) = extract(x)
+  def extract(x: A, c: Any) = extract(x)
 
   def name: String
 
-  def extract(a: X): FeatureGroup[Y]
+  def extract(a: A): FeatureGroup[B]
 
-  override def appendName(n: String) = create(s"$name-$n") { (a: X) =>
+  override def appendName(n: String) = create(s"$name-$n") { (a: A) =>
     extract(a).appendName(n)
   }
 
-  override def changeName(n: String) = create(n) { (a: X) =>
+  override def changeName(n: String) = create(n) { (a: A) =>
     extract(a).changeName(n)
   }
 
-  override def map[Z](f: Y => Z) = create(name) { (a: X) =>
+  override def map[Z](f: B => Z) = create(name) { (a: A) =>
     extract(a).map(f)
   }
 
-  override def contramap[Z](f: Z => X) = create(name) {(a: Z) =>
+  override def contramap[Z](f: Z => A) = create(name) {(a: Z) =>
     extract(f(a))
   }
 
-  def andThen[Z](f: Featurizer[Y, Z]) = create(name + "-" + f.name) { (a: X) =>
+  def andThen[Z](f: Featurizer[B, Z]) = create(name + "-" + f.name) { (a: A) =>
     extract(a).flatMap(f)
   }
 
-  override def filter(f: Y => Boolean) = create(name) { (a: X) =>
+  override def filter(f: B => Boolean) = create(name) { (a: A) =>
     extract(a).filter(f)
   }
 
-  override def topK(k: Int): Featurizer[X, Y] = create(name) { (a: X) =>
+  override def topK(k: Int): Featurizer[A, B] = create(name) { (a: A) =>
     extract(a).topK(k)
   }
 
-  override def assignWeights(f: Y => Double) = create(name) { (a: X) =>
+  override def assignWeights(f: B => Double) = create(name) { (a: A) =>
     extract(a).assignValues(f)
   }
 
-  override def uniformWeight = create(name) { (a: X) =>
+  override def uniformWeight = create(name) { (a: A) =>
     extract(a).uniformValue
   }
 
-  override def l2Normalize = create(name) { (a: X) =>
+  override def l2Normalize = create(name) { (a: A) =>
     extract(a).l2Normalize
   }
 
-  override def l1Normalize = create(name) { (a: X) =>
+  override def l1Normalize = create(name) { (a: A) =>
     extract(a).l1Normalize
   }
 
-  override def binarize(threshold: Double) = create(name) { (a: X) =>
+  override def binarize(threshold: Double) = create(name) { (a: A) =>
     extract(a).binarize(threshold)
   }
 
@@ -70,15 +70,17 @@ trait Featurizer[-X, +Y] extends ContextualizedFeaturizer[X, Y, Any] {
     FeatureExtractor.Trivial(self binarize t appendName s"$t+")
   })
 
-  def >>>[Z](that: Featurizer[Y, Z]) = self andThen that
+  def >>>[Z](that: Featurizer[B, Z]) = self andThen that
 
-  def >>>[Z](that: FeatureExtractor[Y, Z]) = featurizerToFeatureExtractor(self) >>> that
+  def >>>[Z](that: FeatureExtractor[B, Z]) = featurizerToFeatureExtractor(self) >>> that
 
-  def *[X1 <: X, Y1](that: Featurizer[X1, Y1]): Featurizer[X1, (Y, Y1)] = create(name + "," + that.name) { a =>
+  def *[X1 <: A, Y1](that: Featurizer[X1, Y1]): Featurizer[X1, (B, Y1)] = create(name + "," + that.name) { a =>
     self.extract(a) cartesianProduct that.extract(a)
   }
 
-  def <*>[X1, Y1](that: Featurizer[X1, Y1]): Featurizer[(X, X1), (Y, Y1)] = new FeaturizerT.ProductFeaturizer(self, that)
+  def <*>[X1, Y1](that: Featurizer[X1, Y1]): Featurizer[(A, X1), (B, Y1)] = new SingleProductSingle(self, that)
+
+  def <*>[C, D, TD](that: FeaturizerFamily[C, D, TD]): FeaturizerFamily[(A, C), (B, D), TD] = new SingleProductFamily(self, that)
 
   def ×[X1, Y1](that: Featurizer[X1, Y1]) = <*>(that)
 
@@ -105,14 +107,3 @@ object Featurizer {
 
 }
 
-private[tongfei] object FeaturizerT {
-
-  case class ProductFeaturizer[X1, Y1, X2, Y2](f1: Featurizer[X1, Y1], f2: Featurizer[X2, Y2]) extends Featurizer[(X1, X2), (Y1, Y2)] {
-    val name = "(" + f1.name + "," + f2.name + ")"
-    def extract(a: (X1, X2)) = {
-      val (x1, x2) = a
-      f1.extract(x1) cartesianProduct f2.extract(x2)
-    }
-  }
-
-}

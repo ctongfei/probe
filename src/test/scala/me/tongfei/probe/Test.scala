@@ -5,6 +5,8 @@ package me.tongfei.probe
  */
 object Test extends App {
 
+  val fff = FeatureVector.parse("")
+
   val fWord = FeatureGroup.count("word")(Array(1, 2, 3, 1, 2, 4, 6, 7))
   val fX = FeatureGroup("idf")((0 until 4).map(i => i → (1.0 / i)))
 

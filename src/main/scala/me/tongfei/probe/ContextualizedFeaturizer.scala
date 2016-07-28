@@ -67,6 +67,8 @@ trait ContextualizedFeaturizer[-X, +Y, -C] {
 
   def >>>[Z, C1 <: C](f: ContextualizedFeaturizer[Y, Z, C1]) = andThen(f)
 
+  override def toString = name
+
 }
 
 object ContextualizedFeaturizer {

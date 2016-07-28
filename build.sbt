@@ -1,12 +1,13 @@
 name := "probe"
 organization := "me.tongfei"
-version := "0.6.8-SNAPSHOT"
+version := "0.7.0-SNAPSHOT"
 scalaVersion := "2.11.8"
 isSnapshot := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies += "de.bwaldvogel" % "liblinear" % "1.95"
+libraryDependencies += "me.tongfei" %% "granite" % "4.10.3-SNAPSHOT" % Test
 
 scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline", "-deprecation", "-Yinline-warnings")
 
