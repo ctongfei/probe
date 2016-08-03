@@ -1,9 +1,12 @@
 package me.tongfei.probe
 
+import scala.collection.mutable
+
 /**
   * Represents a similarity function that when given two feature groups,
   * produces in a single similarity feature.
-  * @author Tongfei Chen (ctongfei@gmail.com).
+ *
+ * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.1
   */
 trait FeatureSimilarity { self =>
@@ -17,20 +20,11 @@ trait FeatureSimilarity { self =>
   def apply[A, B, C](f1: Featurizer[A, C], f2: Featurizer[B, C]): Featurizer[(A, B), Unit] =
     new FeatureSimilarityT.SimilarityFeaturizer(self, f1, f2)
 
-
   def apply[A, B](f: Featurizer[A, B]): Featurizer[(A, A), Unit] = apply(f, f)
 
-  def apply[A1, A2, B, C1, C2](f1: ContextualizedFeaturizer[A1, B, C1], f2: ContextualizedFeaturizer[A2, B, C2]): ContextualizedFeaturizer[(A1, A2), Unit, (C1, C2)] = {
-    ContextualizedFeaturizer.singleNumerical(s"$similarityName(${f1.name},${f2.name})") { (pair: (A1, A2), c: (C1, C2)) =>
-      val (a, b) = pair
-      val (ca, cb) = c
-      val fa = f1.extract(a, ca)
-      val fb = f2.extract(b, cb)
-      self.apply(fa, fb)
-    }
-  }
+  def apply[A, B, C, T1, T2](f1: FeaturizerFamily[A, C, T1], f2: FeaturizerFamily[B, C, T2]): FeaturizerFamily[(A, B), Unit, (T1, T2)] =
+    new FeatureSimilarityT.SimilarityFeaturizerFamily(self, f1, f2)
 
-  def apply[A, B, C](f: ContextualizedFeaturizer[A, B, C]): ContextualizedFeaturizer[(A, A), Unit, (C, C)] = apply(f, f)
 }
 
 object FeatureSimilarity {
@@ -53,6 +47,29 @@ private[tongfei] object FeatureSimilarityT {
       val fa = f1.extract(a)
       val fb = f2.extract(b)
       SingleNumericalFeature(name)(sim(fa, fb))
+    }
+  }
+
+  case class SimilarityFeaturizerFamily[A, B, C, T1, T2](sim: FeatureSimilarity, f1: FeaturizerFamily[A, C, T1], f2: FeaturizerFamily[B, C, T2]) extends FeaturizerFamily[(A, B), Unit, (T1, T2)] {
+    def name(tag: (T1, T2)) = s"${sim.similarityName}(${f1.name(tag._1)},${f2.name(tag._2)})"
+    def extractWithTags(x: (A, B)) = {
+      val (a, b) = x
+
+      val ma = mutable.HashMap[T1, mutable.ArrayBuffer[(C, Double)]]()
+      for ((t1, c, w) <- f1.extractWithTags(a)) {
+        if (!ma.contains(t1)) ma += t1 -> mutable.ArrayBuffer[(C, Double)]()
+        ma(t1) += c -> w
+      }
+      val mb = mutable.HashMap[T2, mutable.ArrayBuffer[(C, Double)]]()
+      for ((t2, c, w) <- f2.extractWithTags(b)) {
+        if (!mb.contains(t2)) mb += t2 -> mutable.ArrayBuffer[(C, Double)]()
+        mb(t2) += c -> w
+      }
+
+      for {
+        (ta, fas) <- ma
+        (tb, fbs) <- mb
+      } yield ((ta, tb), (), sim(FeatureGroup(f1.name(ta))(fas), FeatureGroup(f2.name(tb))(fbs)))
     }
   }
 

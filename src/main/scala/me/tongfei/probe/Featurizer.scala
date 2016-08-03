@@ -6,30 +6,28 @@ import scala.language.implicitConversions
   * Represents a feature extractor that extracts a sequence of features with the same group name.
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
-trait Featurizer[-A, +B] extends ContextualizedFeaturizer[A, B, Any] {
+trait Featurizer[-A, +B] {
   self =>
 
   import Featurizer._
-
-  def extract(x: A, c: Any) = extract(x)
 
   def name: String
 
   def extract(a: A): FeatureGroup[B]
 
-  override def appendName(n: String) = create(s"$name-$n") { (a: A) =>
+  def appendName(n: String) = create(s"$name-$n") { (a: A) =>
     extract(a).appendName(n)
   }
 
-  override def changeName(n: String) = create(n) { (a: A) =>
+  def changeName(n: String) = create(n) { (a: A) =>
     extract(a).changeName(n)
   }
 
-  override def map[Z](f: B => Z) = create(name) { (a: A) =>
+  def map[Z](f: B => Z) = create(name) { (a: A) =>
     extract(a).map(f)
   }
 
-  override def contramap[Z](f: Z => A) = create(name) {(a: Z) =>
+  def contramap[Z](f: Z => A) = create(name) {(a: Z) =>
     extract(f(a))
   }
 
@@ -37,31 +35,31 @@ trait Featurizer[-A, +B] extends ContextualizedFeaturizer[A, B, Any] {
     extract(a).flatMap(f)
   }
 
-  override def filter(f: B => Boolean) = create(name) { (a: A) =>
+  def filter(f: B => Boolean) = create(name) { (a: A) =>
     extract(a).filter(f)
   }
 
-  override def topK(k: Int): Featurizer[A, B] = create(name) { (a: A) =>
+  def topK(k: Int): Featurizer[A, B] = create(name) { (a: A) =>
     extract(a).topK(k)
   }
 
-  override def assignWeights(f: B => Double) = create(name) { (a: A) =>
+  def assignWeights(f: B => Double) = create(name) { (a: A) =>
     extract(a).assignValues(f)
   }
 
-  override def uniformWeight = create(name) { (a: A) =>
+  def uniformWeight = create(name) { (a: A) =>
     extract(a).uniformValue
   }
 
-  override def l2Normalize = create(name) { (a: A) =>
+  def l2Normalize = create(name) { (a: A) =>
     extract(a).l2Normalize
   }
 
-  override def l1Normalize = create(name) { (a: A) =>
+  def l1Normalize = create(name) { (a: A) =>
     extract(a).l1Normalize
   }
 
-  override def binarize(threshold: Double) = create(name) { (a: A) =>
+  def binarize(threshold: Double) = create(name) { (a: A) =>
     extract(a).binarize(threshold)
   }
 
@@ -69,6 +67,8 @@ trait Featurizer[-A, +B] extends ContextualizedFeaturizer[A, B, Any] {
   def discretize(thresholds: Seq[Double]) = FeatureExtractor.Concatenated(thresholds map { t =>
     FeatureExtractor.Trivial(self binarize t appendName s"$t+")
   })
+
+  def >>>[Z](that: B => Z) = self map that
 
   def >>>[Z](that: Featurizer[B, Z]) = self andThen that
 

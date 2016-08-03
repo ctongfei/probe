@@ -5,7 +5,7 @@ package me.tongfei.probe
  * @author Tongfei Chen
  * @since 0.5.0
  */
-trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any] { self =>
+trait FeatureExtractor[-X, +Y] { self =>
 
   import FeatureExtractor._
 
@@ -13,9 +13,7 @@ trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any]
 
   def extract(x: X): Iterable[FeatureGroup[Y]]
 
-  def extractOnGroup[X1 <: X](ga: FeatureGroup[X1], c: Any) = extractOnGroup(ga)
-
-  def extract(a: X, c: Any) = extract(a)
+  def >>>[Z](that: Y => Z) = self map that
 
   def >>>[Z](that: FeatureExtractor[Y, Z]): FeatureExtractor[X, Z]
     = new Composed(self, that)
@@ -23,13 +21,13 @@ trait FeatureExtractor[-X, +Y] extends ContextualizedFeatureExtractor[X, Y, Any]
   def ++[X1 <: X, Z >: Y](that: FeatureExtractor[X1, Z]): FeatureExtractor[X1, Z]
      = new Concatenated(Iterable(self, that))
 
-  override def contramap[W](f: W => X): FeatureExtractor[W, Y] = self match {
+  def contramap[W](f: W => X): FeatureExtractor[W, Y] = self match {
     case Trivial(g)       => Trivial(g contramap f)
     case Concatenated(gs) => Concatenated(gs map { _ contramap f })
     case Composed(g, h)   => Composed(g contramap f, h)
   }
 
-  override def map[Z](f: Y => Z): FeatureExtractor[X, Z] = self match {
+  def map[Z](f: Y => Z): FeatureExtractor[X, Z] = self match {
     case Trivial(g)       => Trivial(g map f)
     case Concatenated(gs) => Concatenated(gs map { _ map f})
     case Composed(g, h)   => Composed(g, h map f)
