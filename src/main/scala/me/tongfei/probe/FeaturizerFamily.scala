@@ -27,7 +27,7 @@ trait FeaturizerFamily[-A, +B, TB] extends FeatureExtractor[A, B] { self =>
         m(ty) += y -> (wx * wy)
       }
     }
-    m.map { case (tag, list) => FeatureGroup(name(tag))(list) }
+    m map { case (tag, list) => FeatureGroup(name(tag))(list) }
   }
 
   def extract(x: A): Iterable[FeatureGroup[B]] = {
@@ -36,7 +36,7 @@ trait FeaturizerFamily[-A, +B, TB] extends FeatureExtractor[A, B] { self =>
       if (!m.contains(tag)) m += tag -> mutable.ArrayBuffer[(B, Double)]()
       m(tag) += y -> w
     }
-    m.map { case (tag, list) => FeatureGroup(name(tag))(list) }
+    m map { case (tag, list) => FeatureGroup(name(tag))(list) }
   }
 
   override def contramap[W](f: W => A): FeaturizerFamily[W, B, TB] = new FeaturizerFamily[W, B, TB] {
@@ -49,17 +49,15 @@ trait FeaturizerFamily[-A, +B, TB] extends FeatureExtractor[A, B] { self =>
     def extractWithTags(a: A) = self.extractWithTags(a).map { case (t, b, w) => (t, f(b), w) }
   }
 
+  override def >>>[C](f: B => C) = self map f
+
   def <*>[C, D](that: Featurizer[C, D]): FeaturizerFamily[(A, C), (B, D), TB] = new FamilyProductSingle(self, that)
 
   def <*>[C, D, TD](that: FeaturizerFamily[C, D, TD]): FeaturizerFamily[(A, C), (B, D), (TB, TD)] = new FamilyProductFamily(self, that)
 
   override def toString = {
-    try {
-      name("?".asInstanceOf[TB])
-    }
-    catch {
-      case ex: Exception => super.toString
-    }
+    try { name("?".asInstanceOf[TB]) }
+    catch { case ex: Exception => super.toString }
   }
 
 }
@@ -83,5 +81,6 @@ object FeaturizerFamily {
       def name(tag: TB) = s"$n.$tag"
       def extractWithTags(x: A) = f(x)
     }
+
 
 }

@@ -5,7 +5,7 @@ package me.tongfei.probe
  */
 
 case class SingleProductSingle[A, B, C, D](self: Featurizer[A, B], that: Featurizer[C, D]) extends Featurizer[(A, C), (B, D)] {
-  val name = s"${self.name},${that.name}"
+  val name = s"(${self.name},${that.name})"
   def extract(ac: (A, C)) = {
     val (a, c) = ac
     self.extract(a) cartesianProduct that.extract(c)
@@ -14,7 +14,7 @@ case class SingleProductSingle[A, B, C, D](self: Featurizer[A, B], that: Featuri
 }
 
 case class FamilyProductSingle[A, B, TB, C, D](self: FeaturizerFamily[A, B, TB], that: Featurizer[C, D]) extends FeaturizerFamily[(A, C), (B, D), TB] {
-  def name(tag: TB) = s"${self.name(tag)}.${that.name}"
+  def name(tag: TB) = s"(${self.name(tag)},${that.name})"
   def extractWithTags(ac: (A, C)) = {
     val (a, c) = ac
     for {
@@ -26,7 +26,7 @@ case class FamilyProductSingle[A, B, TB, C, D](self: FeaturizerFamily[A, B, TB],
 }
 
 case class SingleProductFamily[A, B, C, D, TD](self: Featurizer[A, B], that: FeaturizerFamily[C, D, TD]) extends FeaturizerFamily[(A, C), (B, D), TD] {
-  def name(tag: TD) = s"${self.name}.${that.name(tag)}"
+  def name(tag: TD) = s"(${self.name},${that.name(tag)})"
   def extractWithTags(ac: (A, C)) = {
     val (a, c) = ac
     for {
@@ -38,7 +38,7 @@ case class SingleProductFamily[A, B, C, D, TD](self: Featurizer[A, B], that: Fea
 }
 
 case class FamilyProductFamily[A, B, TB, C, D, TD](self: FeaturizerFamily[A, B, TB], that: FeaturizerFamily[C, D, TD]) extends FeaturizerFamily[(A, C), (B, D), (TB, TD)] {
-  def name(tag: (TB, TD)) = s"${self.name(tag._1)},${that.name(tag._2)}"
+  def name(tag: (TB, TD)) = s"(${self.name(tag._1)},${that.name(tag._2)})"
   def extractWithTags(ac: (A, C)) = {
     val (a, c) = ac
     for {
