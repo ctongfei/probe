@@ -69,7 +69,8 @@ private[tongfei] object FeatureSimilarityT {
       for {
         (ta, fas) <- ma
         (tb, fbs) <- mb
-      } yield ((ta, tb), (), sim(FeatureGroup(f1.name(ta))(fas), FeatureGroup(f2.name(tb))(fbs)))
+        s = sim(FeatureGroup(f1.name(ta))(fas), FeatureGroup(f2.name(tb))(fbs)) if (s != 0.0)
+      } yield ((ta, tb), (), s)
     }
   }
 

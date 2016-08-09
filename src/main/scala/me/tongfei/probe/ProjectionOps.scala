@@ -1,7 +1,10 @@
 package me.tongfei.probe
 
+import me.tongfei.probe.FeatureSimilarityT._
+
 /**
  * Feature extractor projections.
+ *
  * @author Tongfei Chen
  * @since 0.6.2
  */
@@ -28,20 +31,22 @@ trait ProjectionOps {
     import FeatureExtractor._
 
     def projectFirst: FeatureExtractor[A, _] = self match {
-      case Trivial(fz)                                                => Trivial(fz.projectFirst)
-      case FamilyProductSingle(ff: FeaturizerFamily[A, _, _], _)      => ff
-      case SingleProductFamily(f: Featurizer[A, _]          , _)      => Trivial(f)
-      case FamilyProductFamily(ff: FeaturizerFamily[A, _, _], _)      => ff
-      case Concatenated(fzs: Iterable[FeatureExtractor[(A, B), Any]]) => Concatenated(fzs map {_.projectFirst})
+      case Trivial(fz)                                                     => Trivial(fz.projectFirst)
+      case FamilyProductSingle(ff: FeaturizerFamily[A, _, _], _)           => ff
+      case SingleProductFamily(f: Featurizer[A, _]          , _)           => Trivial(f)
+      case FamilyProductFamily(ff: FeaturizerFamily[A, _, _], _)           => ff
+      case SimilarityFeaturizerFamily(_, ff: FeaturizerFamily[A, _, _], _) => ff
+      case Concatenated(fzs: Iterable[FeatureExtractor[(A, B), Any]])      => Concatenated(fzs map {_.projectFirst})
       case _ => throw new FeatureProjectionException
     }
 
     def projectSecond: FeatureExtractor[B, _] = self match {
-      case Trivial(fz)                                                => Trivial(fz.projectSecond)
-      case FamilyProductSingle(_, g: Featurizer[B, _])                => Trivial(g)
-      case SingleProductFamily(_, gg: FeaturizerFamily[B, _, _])      => gg
-      case FamilyProductFamily(_, gg: FeaturizerFamily[B, _, _])      => gg
-      case Concatenated(fzs: Iterable[FeatureExtractor[(A, B), Any]]) => Concatenated(fzs map {_.projectSecond})
+      case Trivial(fz)                                                     => Trivial(fz.projectSecond)
+      case FamilyProductSingle(_, g: Featurizer[B, _])                     => Trivial(g)
+      case SingleProductFamily(_, gg: FeaturizerFamily[B, _, _])           => gg
+      case FamilyProductFamily(_, gg: FeaturizerFamily[B, _, _])           => gg
+      case SimilarityFeaturizerFamily(_, _, gg: FeaturizerFamily[B, _, _]) => gg
+      case Concatenated(fzs: Iterable[FeatureExtractor[(A, B), Any]])      => Concatenated(fzs map {_.projectSecond})
       case _ => throw new FeatureProjectionException
     }
 

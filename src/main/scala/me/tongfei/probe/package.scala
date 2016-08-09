@@ -16,9 +16,9 @@ package object probe extends Priority0Implicits {
 
     def >>>[C](g: Featurizer[B, C]) = g contramap f
 
-    def >>>[C](g: FeatureExtractor[B, C]) = g contramap f
-
     def >>>[C, TC](g: FeaturizerFamily[B, C, TC]) = g contramap f
+
+    def >>>[C](g: FeatureExtractor[B, C]) = g contramap f
 
   }
 
