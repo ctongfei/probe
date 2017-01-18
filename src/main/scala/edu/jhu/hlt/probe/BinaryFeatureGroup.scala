@@ -1,10 +1,11 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
   * Represents a group of features (having the same group name)
   * whose weights are all binary (i.e. all 1 because 0 features shouldn't exist
   * in the iterable sequence of features).
-  * @author Tongfei Chen (ctongfei@gmail.com).
+ *
+ * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.0
   */
 trait BinaryFeatureGroup[A] extends FeatureGroup[A] { self =>

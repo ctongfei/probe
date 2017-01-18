@@ -1,7 +1,7 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
-import me.tongfei.granite._
-import me.tongfei.granite.io._
+import edu.jhu.hlt.granite._
+import edu.jhu.hlt.granite.io._
 
 /**
  * @author Tongfei Chen

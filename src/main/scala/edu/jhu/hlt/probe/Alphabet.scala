@@ -1,9 +1,10 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 import java.io._
 import java.nio.file._
-import scala.collection._
+
 import scala.collection.JavaConversions._
+import scala.collection._
 
 /**
  * @author Tongfei Chen (tongfei@jhu.edu).

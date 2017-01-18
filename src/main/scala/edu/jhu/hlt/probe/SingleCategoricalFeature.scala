@@ -1,8 +1,9 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
   * Represents a single categorical feature.
-  * @author Tongfei Chen (ctongfei@gmail.com).
+ *
+ * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.5.0
   */
 class SingleCategoricalFeature[A](val name: String)(val key: A) extends BinaryFeatureGroup[A] {

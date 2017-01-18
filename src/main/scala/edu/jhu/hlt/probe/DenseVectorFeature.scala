@@ -1,8 +1,9 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
   * Represents a feature group that is formed by packing a dense feature into a feature vector.
-  * @author Tongfei Chen (ctongfei@gmail.com).
+ *
+ * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.4
   */
 class DenseVectorFeature(val name: String)(val vector: Array[Double]) extends FeatureGroup[Int] {

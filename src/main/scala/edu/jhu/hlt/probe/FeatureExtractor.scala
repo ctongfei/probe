@@ -1,7 +1,8 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
  * Represents a feature extractor.
+ *
  * @author Tongfei Chen
  * @since 0.5.0
  */

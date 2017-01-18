@@ -1,6 +1,4 @@
-package me.tongfei.probe
-
-import me.tongfei.probe.FeatureSimilarityT._
+package edu.jhu.hlt.probe
 
 /**
  * Feature extractor projections.
@@ -14,13 +12,13 @@ trait ProjectionOps {
 
     def projectFirst: Featurizer[A, _] = self match {
       case product: SingleProductSingle[A, a, B, b] => product.self
-      case sim: FeatureSimilarityT.SimilarityFeaturizer[A, B, c] => sim.f1
+      case sim: SimilarityFeaturizer[A, B, c] => sim.f1
       case _ => throw new FeatureProjectionException
     }
 
     def projectSecond: Featurizer[B, _] = self match {
       case product: SingleProductSingle[A, a, B, b] => product.that
-      case sim: FeatureSimilarityT.SimilarityFeaturizer[A, B, c] => sim.f2
+      case sim: SimilarityFeaturizer[A, B, c] => sim.f2
       case _ => throw new FeatureProjectionException
     }
 

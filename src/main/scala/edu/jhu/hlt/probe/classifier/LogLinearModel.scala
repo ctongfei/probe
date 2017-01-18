@@ -1,12 +1,10 @@
-package me.tongfei.probe.classifier
+package edu.jhu.hlt.probe.classifier
 
-import me.tongfei.probe.util._
 import de.bwaldvogel.liblinear._
-import me.tongfei.probe._
+import edu.jhu.hlt.probe._
 import java.nio.file._
-
-import scala.collection._
 import scala.collection.JavaConversions._
+import scala.collection._
 
 /**
   * A simple log-linear model based on the library `liblinear`.

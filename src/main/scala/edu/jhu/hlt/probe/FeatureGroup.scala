@@ -1,6 +1,6 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
-import me.tongfei.probe.util._
+import util._
 import scala.annotation.unchecked.{uncheckedVariance => uv}
 
 /**

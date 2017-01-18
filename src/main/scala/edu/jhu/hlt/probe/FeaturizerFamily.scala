@@ -1,4 +1,4 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 import scala.collection._
 

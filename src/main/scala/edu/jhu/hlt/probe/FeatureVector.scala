@@ -1,7 +1,7 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
-import me.tongfei.probe.util._
 import scala.collection._
+import edu.jhu.hlt.probe.util._
 
 /**
   * @author Tongfei Chen (ctongfei@gmail.com).

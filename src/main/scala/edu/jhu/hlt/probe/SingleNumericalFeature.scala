@@ -1,8 +1,9 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
   * Represents a feature group with one single feature.
-  * @author Tongfei Chen (ctongfei@gmail.com).
+ *
+ * @author Tongfei Chen (ctongfei@gmail.com).
   * @since 0.4.3
   */
 class SingleNumericalFeature(val name: String)(val value: Double = 1.0) extends FeatureGroup[Unit] {

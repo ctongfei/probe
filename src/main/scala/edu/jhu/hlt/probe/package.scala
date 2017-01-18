@@ -1,6 +1,4 @@
-package me.tongfei
-
-import me.tongfei.probe._
+package edu.jhu.hlt
 
 import scala.language.implicitConversions
 

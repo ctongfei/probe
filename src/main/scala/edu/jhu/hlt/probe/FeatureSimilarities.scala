@@ -1,10 +1,10 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
 
-import FeatureSimilarity._
+import edu.jhu.hlt.probe.FeatureSimilarity._
 
 object EqualMatch extends FeatureSimilarity {
   def similarityName = "eq"
