@@ -1,6 +1,8 @@
 ## Probe
 An NLP feature engineering framework for Scala
 
+* Current version: **`0.7.3`**
+
 #### Introduction
 In natural language processing, tasks that require heavy feature engineering is often encountered. 
 These code often contains a lot of boilerplate and ad-hoc tricks, making the code hard to maintain.
