@@ -1,5 +1,4 @@
-package me.tongfei.probe
-
+package edu.jhu.hlt.probe
 /**
   * @author Tongfei Chen (ctongfei@gmail.com).
   */
@@ -7,6 +6,10 @@ object Test4 extends App {
 
   val fWords = Featurizer.count("words") { (s: String) =>
     s.split(' ')
+  }
+
+  val fHasKill = Featurizer.optional("kill") { (s: String) =>
+    if (s.indexOf("kill") != -1) Some("kill") else None
   }
 
   val fCapitalWords = Featurizer.count("capitalizedwords") { (s: String) =>
@@ -29,6 +32,8 @@ object Test4 extends App {
   val s = "John killed Mary"
   val f = fWords >>> (fShift ++ fCapitalWords) >>> (f1gram ++ f2gram)
 
+  val fkill = fHasKill(s)
+  val fkill2 = fHasKill("John loves Mary")
 
   val fs = f.extract(s)
   val fv = FeatureVector.from(fs)

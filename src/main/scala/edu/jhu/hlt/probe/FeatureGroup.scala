@@ -133,6 +133,8 @@ object FeatureGroup {
     */
   def apply[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] = unchecked(g)(fvs).compact
 
+  def optional[A](g: String)(fvs: Option[A]): FeatureGroup[A] = unchecked(g)(fvs.map(k => k -> 1.0))
+
   private[probe] def unchecked[A](g: String)(fvs: Iterable[(A, Double)]): FeatureGroup[A] =
     new FeatureGroup[A] {
       def name = g

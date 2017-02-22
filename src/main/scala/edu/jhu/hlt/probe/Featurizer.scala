@@ -95,6 +95,8 @@ object Featurizer {
 
   def count[A, B](name: String)(f: A => Iterable[B]) = create(name)((a: A) => FeatureGroup.count(name)(f(a)))
 
+  def optional[A, B](name: String)(f: A => Option[B]) = create(name)((a: A) => FeatureGroup.optional(name)(f(a)))
+
   def binary[A, B](name: String)(f: A => Iterable[B]) = create(name)((a: A) => BinaryFeatureGroup(name)(f(a)))
 
   def realValued[A, B](name: String)(f: A => Iterable[(B, Double)]) = create(name)((a: A) => FeatureGroup(name)(f(a)))

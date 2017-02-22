@@ -17,6 +17,8 @@ object FeaturizerFamilyTest extends App {
     } yield t.tag -> s.tokenization.tokenList(t.tokenIndex).text
   }
 
+
+
   val s = comm.sectionList(0).sentenceList(0)
   val t = comm.sectionList(1).sentenceList(0)
 

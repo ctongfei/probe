@@ -1,6 +1,6 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
-import me.tongfei.probe.classifier._
+import edu.jhu.hlt.probe.classifier._
 
 /**
   * @author Tongfei Chen (ctongfei@gmail.com).

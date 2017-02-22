@@ -1,4 +1,4 @@
-package me.tongfei.probe
+package edu.jhu.hlt.probe
 
 /**
  * @author Tongfei Chen
