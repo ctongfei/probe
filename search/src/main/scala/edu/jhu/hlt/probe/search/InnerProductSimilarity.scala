@@ -1,4 +1,4 @@
-package edu.jhu.hlt.reflex
+package edu.jhu.hlt.probe.search
 
 import org.apache.lucene.index._
 import org.apache.lucene.search.similarities._

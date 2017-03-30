@@ -1,4 +1,4 @@
-package edu.jhu.hlt.reflex
+package edu.jhu.hlt.probe.search
 
 import edu.jhu.hlt.probe._
 

@@ -1,9 +1,9 @@
-package edu.jhu.hlt
+package edu.jhu.hlt.probe
 
 /**
  * @author Tongfei Chen
  */
-package object reflex {
+package object search {
   implicit class StringMatch(ctx: StringContext) {
 
     /** Enables the "sm" string interpolator. */

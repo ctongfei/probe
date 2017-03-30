@@ -1,7 +1,7 @@
 ## Probe
 Discriminative feature-based information retrieval and an NLP feature engineering framework for Scala
 
-* Current version: **`0.7.4`**
+* Current version: **`0.8.0`**
 
 #### Introduction
 In natural language processing, tasks that require heavy feature engineering is often encountered. 

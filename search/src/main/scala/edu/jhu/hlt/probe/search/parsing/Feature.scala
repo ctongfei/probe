@@ -1,4 +1,4 @@
-package edu.jhu.hlt.reflex.parsing
+package edu.jhu.hlt.probe.search.parsing
 
 import fastparse.all._
 
