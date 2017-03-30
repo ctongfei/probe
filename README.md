@@ -1,7 +1,7 @@
 ## Probe
-An NLP feature engineering framework for Scala
+Discriminative feature-based information retrieval and an NLP feature engineering framework for Scala
 
-* Current version: **`0.7.3`**
+* Current version: **`0.7.4`**
 
 #### Introduction
 In natural language processing, tasks that require heavy feature engineering is often encountered. 
