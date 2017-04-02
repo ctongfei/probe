@@ -1,6 +1,7 @@
 package edu.jhu.hlt.probe
 
 import scala.collection._
+import edu.jhu.hlt.probe.util._
 
 /**
  * A feature vector stored as a map from strings to values.
@@ -76,6 +77,13 @@ class StringFeatureVector extends DefaultMap[String, Double] {
       if (this.data contains f.toString)
         this.data(f.toString) += w
     else this.data += f.toString → w
+  }
+
+  /**
+   * @return a LIBSVM format representation of this feature vector.
+   */
+  override def toString() = {
+    data.map { case (k, w) => s"${k.replace(" ", "_")}:${format(w)}" }.mkString(" ")
   }
 
 }

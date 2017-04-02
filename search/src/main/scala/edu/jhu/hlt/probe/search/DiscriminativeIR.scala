@@ -7,7 +7,7 @@ import edu.jhu.hlt.probe._
  */
 abstract class DiscriminativeIR[Q] {
 
-  val queryExtractor: FeatureExtractor[Q, _]
+  val queryFeaturizer: FeatureExtractor[Q, _]
 
   val model: Model
 
@@ -18,9 +18,11 @@ abstract class DiscriminativeIR[Q] {
   def project(fq: FeatureVector[_]) = projector.project(fq)
 
   def query(q: Q, k: Int) = {
-    val fq = FeatureVector.from(queryExtractor(q))
+    val fq = FeatureVector.from(queryFeaturizer(q))
     val tq = projector.project(fq)
-    queryEngine.query(tq, k)
+    queryEngine.query(tq, k).map { case (doc, score) =>
+      (doc.getField("id").stringValue(), FeatureVector.parse(doc.getField("content").stringValue()), score)
+    }
   }
 
 }

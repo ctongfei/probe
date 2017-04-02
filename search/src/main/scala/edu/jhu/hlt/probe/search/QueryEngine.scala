@@ -4,32 +4,49 @@ import java.nio.file._
 
 import edu.jhu.hlt.probe._
 import org.apache.lucene.index._
+import org.apache.lucene.queries.payloads._
+import org.apache.lucene.queryparser.classic._
 import org.apache.lucene.search._
+import org.apache.lucene.search.spans._
 import org.apache.lucene.store._
 
 /**
-  * @author Tongfei Chen
-  */
-
+ * Executes discriminative IR on an index.
+ * @author Tongfei Chen
+ */
 class QueryEngine(dir: String) {
 
-  val directory = FSDirectory.open(Paths.get(dir))
+  private val directory = FSDirectory.open(Paths.get(dir))
 
-  val dr = DirectoryReader.open(directory)
-  val is = new IndexSearcher(dr)
+  private val dr = DirectoryReader.open(directory)
+  private val is = new IndexSearcher(dr)
   is.setSimilarity(InnerProductSimilarity)
 
-  def buildQuery(fv: StringFeatureVector): Query = {
+  class InnerProductPayloadFunction(val w: Float) extends PayloadFunction {
+    def docScore(docId: Int, field: String, numPayloadsSeen: Int, payloadScore: Float): Float = {
+      payloadScore * w
+    }
+
+    def currentScore(docId: Int, field: String, start: Int, end: Int, numPayloadsSeen: Int, currentScore: Float, currentPayloadScore: Float): Float = {
+      currentPayloadScore
+    }
+
+    override def hashCode = 0
+
+    override def equals(obj: Any) = false
+  }
+
+  def buildQuery(fv: StringFeatureVector): Query = { //TODO: use FeatureVectorAnalyzer
     val clauses = fv.map { case (f, v) =>
       new BooleanClause(
-        new BoostQuery(
-          new TermQuery(
+        new PayloadScoreQuery(
+          new SpanTermQuery(
             new Term(
               "content",
-              f.replace(' ', '_').replace('-', '_').replace('~', '_').toLowerCase
+              f.replace(' ', '_')
             )
           ),
-          v.toFloat
+          new InnerProductPayloadFunction(v.toFloat)
         ),
         BooleanClause.Occur.SHOULD
       )
@@ -44,25 +61,26 @@ class QueryEngine(dir: String) {
   private def query0(fv: StringFeatureVector, k: Int) = {
     val lq = buildQuery(fv)
     is.search(lq, k).scoreDocs.map { d =>
-      is.doc(d.doc) → d.score
+      is.doc(d.doc) → d.score.toDouble
     }
   }
 
-  def query(fv: FeatureVector[_], k: Int) = {
-    query0(Util.hex(fv), k)
-  }
+  def query(fv: FeatureVector[_], k: Int) = query0(fv.toStringFeatureVector, k)
 
   private def query0WithExplanation(fv: StringFeatureVector, k: Int) = {
     val lq = buildQuery(fv)
-    is.search(lq, k).scoreDocs.map { d =>
-      println(is.doc(d.doc).getField("content").stringValue())
+    val res = is.search(lq, k)
+    res.scoreDocs.map { d =>
+      val doc = is.doc(d.doc)
+      println("ID: " + doc.getField("id").stringValue())
+      println("FV: " + doc.getField("content").stringValue())
       println(explain(lq, d.doc))
-      is.doc(d.doc) → d.score
+      is.doc(d.doc) → d.score.toDouble
     }
   }
 
   def queryWithExplanation(fv: FeatureVector[_], k: Int) = {
-    query0WithExplanation(Util.hex(fv), k)
+    query0WithExplanation(fv.toStringFeatureVector, k)
   }
 
   // FOR DEBUGGING PURPOSES

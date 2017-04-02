@@ -4,7 +4,7 @@ package object util {
 
   def format(d: Double): String = {
     val s1 = s"$d"
-    val s2 = f"$d%.4f"
+    val s2 = f"$d%.6f"
     if (s1.length > s2.length) s2 else s1
   }
 

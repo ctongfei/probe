@@ -1,7 +1,7 @@
 package edu.jhu.hlt.probe.search
 
 import edu.jhu.hlt.probe._
-import edu.jhu.hlt.reflex.parsing._
+import edu.jhu.hlt.probe.search.parsing._
 
 import scala.collection._
 

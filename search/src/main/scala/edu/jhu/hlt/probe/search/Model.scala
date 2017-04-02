@@ -4,6 +4,7 @@ import java.io._
 
 import edu.jhu.hlt.probe._
 import edu.jhu.hlt.probe.classifier._
+import poly.io.Local._
 
 /**
  * Encapsulates a discriminative retrieval model.
@@ -37,7 +38,6 @@ object Model {
 
   /**
    * Fits a discriminative IR model based a feature extractor on pairs and a list of samples.
- *
    * @param fxy Feature extractor
    * @param xs List of samples
    * @param ys List of corresponding gold labels (should be 0 or 1 meaning irrelevant or relevant)

@@ -3,7 +3,7 @@ package edu.jhu.hlt.probe.search
 import java.math._
 
 import edu.jhu.hlt.probe._
-import edu.jhu.hlt.reflex.parsing._
+import edu.jhu.hlt.probe.search.parsing._
 
 /**
  * @author Tongfei Chen

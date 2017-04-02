@@ -3,7 +3,7 @@ import sbt.Keys._
 lazy val commonSettings = Seq(
 	name := "probe",
 	organization := "edu.jhu.hlt",
-	version := "0.8.0",
+	version := "0.9.0",
 	scalaVersion := "2.11.8",
 	isSnapshot := false,
 
@@ -40,10 +40,10 @@ lazy val search = (project in file("search")).settings(commonSettings: _*)
 		libraryDependencies ++= Seq(
 			"me.tongfei" %  "progressbar" % "0.5.3",
 			"me.tongfei" %% "poly-io" % "0.3.2",
-	    "org.apache.lucene" % "lucene-core" % "5.4.0",
-      "org.apache.lucene" % "lucene-analyzers-common" % "5.4.0",
-      "org.apache.lucene" % "lucene-queryparser" % "5.4.0",
-      "org.apache.lucene" % "lucene-backward-codecs" % "5.4.0",
+	    "org.apache.lucene" % "lucene-core" % "6.5.0",
+      "org.apache.lucene" % "lucene-analyzers-common" % "6.5.0",
+      "org.apache.lucene" % "lucene-queryparser" % "6.5.0",
+      "org.apache.lucene" % "lucene-backward-codecs" % "6.5.0",
       "com.lihaoyi" %% "fastparse" % "0.3.7"
 		)
 	)
