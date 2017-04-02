@@ -11,7 +11,6 @@ lazy val commonSettings = Seq(
 	resolvers += "Artifactory Realm" at "http://sparsity.ad.hltcoe.jhu.edu:8081/artifactory/ivy-repo",
 
 	libraryDependencies += "de.bwaldvogel" % "liblinear" % "1.95",
-	libraryDependencies += "edu.jhu.hlt" %% "granite" % "4.12.0" % Test,
 
 	scalacOptions in ThisBuild ++= Seq("-optimise", "-Yclosure-elim", "-Yinline", "-deprecation", "-Yinline-warnings"),
 
@@ -31,6 +30,8 @@ lazy val commonSettings = Seq(
 
 lazy val core = (project in file("core")).settings(commonSettings: _*).settings(
 	name := "probe"
+).settings(
+	libraryDependencies += "edu.jhu.hlt" %% "granite" % "4.12.0" % Test
 )
 
 lazy val search = (project in file("search")).settings(commonSettings: _*)
@@ -38,9 +39,9 @@ lazy val search = (project in file("search")).settings(commonSettings: _*)
 	.settings(
 		name := "probe-search",
 		libraryDependencies ++= Seq(
-			"me.tongfei" %  "progressbar" % "0.5.3",
-			"me.tongfei" %% "poly-io" % "0.3.2",
-	    "org.apache.lucene" % "lucene-core" % "6.5.0",
+      "me.tongfei" %  "progressbar" % "0.5.3",
+      "me.tongfei" %% "poly-io" % "0.3.2",
+      "org.apache.lucene" % "lucene-core" % "6.5.0",
       "org.apache.lucene" % "lucene-analyzers-common" % "6.5.0",
       "org.apache.lucene" % "lucene-queryparser" % "6.5.0",
       "org.apache.lucene" % "lucene-backward-codecs" % "6.5.0",

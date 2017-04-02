@@ -20,10 +20,11 @@ If you are using it in an academic work, please cite
  Guide to each can be found in their respective readme files.
  
  #### Changelog
- - `0.9.0`: Supports weighted indices through Lucene's payload mechanism.
+ - `0.9.0`: Supports weighted indices through Lucene's payload mechanism; update Lucene to 6.5.0.
  - `0.8.0`: Merged `probe-search` from a standalone package.
  - `0.7.4`: Added `Featurizer.optional`.
  - `0.7.3`: Maintenance version bump for depending libraries.
  - `0.7.2`: Bugfix: escape space to underscore in feature vector formatters.
  - `0.7.1`: Various dot operations on feature families.
  - `0.7.0`: Feature families.
+ 
