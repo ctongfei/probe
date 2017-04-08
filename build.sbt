@@ -3,7 +3,7 @@ import sbt.Keys._
 lazy val commonSettings = Seq(
 	name := "probe",
 	organization := "edu.jhu.hlt",
-	version := "0.9.0",
+	version := "0.9.1",
 	scalaVersion := "2.11.8",
 	isSnapshot := false,
 

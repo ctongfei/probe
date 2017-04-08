@@ -68,6 +68,11 @@ trait Featurizer[-A, +B] {
     FeatureExtractor.Trivial(self binarize t appendName s"$t+")
   })
 
+  def tagWith[A1 <: A, T](t: A1 => T): FeaturizerFamily[A1, B, T] = new FeaturizerFamily[A1, B, T] {
+    def name(tag: T) = s"${self.name}.$tag"
+    def extractWithTags(x: A1): Iterable[(T, B, Double)] = self.extract(x).pairs.map { case (b, w) => (t(x), b, w) }
+  }
+
   def >>>[Z](that: B => Z) = self map that
 
   def >>>[Z](that: Featurizer[B, Z]) = self andThen that

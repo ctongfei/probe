@@ -14,12 +14,14 @@ object Test2 extends App {
 
   val top6_3grams = (WordFeaturizer >>> Letter3GramFeaturizer).topK(6)
 
+  val taggedTop6_3grams = top6_3grams tagWith { a: Sentence => a.length }
+
   val top3_words = WordFeaturizer.topK(3)
 
   val s1 = "John killed Mary who killed James who killed Hillary".split(" ").toSeq
   val s2 = "John saved Mary who saved Lily who saved Henry".split(" ").toSeq
 
-  val t = top6_3grams(s1)
+  val t = taggedTop6_3grams(s1)
 
   val fx = top3_words ++ top6_3grams
   val fx1 = top3_words

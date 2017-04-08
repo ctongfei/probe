@@ -1,7 +1,7 @@
 ## Probe
 Discriminative feature-based information retrieval and an NLP feature engineering framework
 
-Current version: **`0.9.0`**
+Current version: **`0.9.1`**
 
 If you are using it in an academic work, please cite
 ```tex
@@ -20,6 +20,7 @@ If you are using it in an academic work, please cite
  Guide to each can be found in their respective readme files.
  
  #### Changelog
+ - `0.9.1`: Added `Featurizer.tagWith`.
  - `0.9.0`: Supports weighted indices through Lucene's payload mechanism; update Lucene to 6.5.0.
  - `0.8.0`: Merged `probe-search` from a standalone package.
  - `0.7.4`: Added `Featurizer.optional`.
