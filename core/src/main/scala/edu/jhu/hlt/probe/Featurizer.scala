@@ -77,6 +77,14 @@ trait Featurizer[-A, +B] {
 
   def >>>[Z](that: Featurizer[B, Z]) = self andThen that
 
+  def >>>[Z, T](that: FeaturizerFamily[B, Z, T]) = new FeaturizerFamily[A, Z, T] {
+    def name(tag: T) = self.name + "-" + that.name(tag)
+    def extractWithTags(x: A): Iterable[(T, Z, Double)] = for {
+      (b, w1) <- self.extract(x).pairs
+      (t, z, w2) <- that.extractWithTags(b)
+    } yield (t, z, w1 * w2)
+  }
+
   def >>>[Z](that: FeatureExtractor[B, Z]) = featurizerToFeatureExtractor(self) >>> that
 
   def *[X1 <: A, Y1](that: Featurizer[X1, Y1]): Featurizer[X1, (B, Y1)] = create(name + "," + that.name) { a =>

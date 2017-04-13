@@ -25,6 +25,8 @@ trait FeatureSimilarity { self =>
   def apply[A, B, C, T1, T2](f1: FeaturizerFamily[A, C, T1], f2: FeaturizerFamily[B, C, T2]): FeaturizerFamily[(A, B), Unit, (T1, T2)] =
     new SimilarityFeaturizerFamily(self, f1, f2)
 
+  def apply[A, B, T](f: FeaturizerFamily[A, B, T]): FeaturizerFamily[(A, A), Unit, (T, T)] = apply(f, f)
+
 }
 
 object FeatureSimilarity {
