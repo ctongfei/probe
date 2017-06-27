@@ -3,7 +3,7 @@ Discriminative IR framework
 
 `probe-search` solves the following ranking problem where *F* satisfies some constraints (please read the paper for full detail):
   
-  <a href="https://www.codecogs.com/eqnedit.php?latex=\arg\max_{c&space;\in&space;C}&space;F(q,c)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\arg\max_{p&space;\in&space;P}&space;F(q,p)" title="\arg\max_{p \in P} F(q,p)" /></a>
+  <a href="https://www.codecogs.com/eqnedit.php?latex=\arg\max_{c&space;\in&space;C}&space;F(q,c)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\arg\max_{c&space;\in&space;C}&space;F(q,c)" title="\arg\max_{c \in C} F(q,c)" /></a>
   
 where *q* is a query, *c* is a candidate, *C* is a candidate set and *F* is the scoring function.
 
